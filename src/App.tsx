@@ -34,6 +34,63 @@ const conversations = [
   { id: 12, name: 'Legal', lastMsg: 'Contract signed.', time: '2 weeks ago', avatar: 'LE', color: 'from-gray-400 to-gray-600' },
 ]
 
+/* =========================
+   Components
+========================= */
+
+function Avatar({ color, avatar }: { color: string; avatar: string }) {
+  return (
+    <div className={`w-11 h-11 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center font-bold text-white shadow-lg border-2 border-white/10 shrink-0`}>
+      {avatar}
+    </div>
+  )
+}
+
+function ConversationItem({
+  conv,
+  isDragging,
+}: {
+  conv: (typeof conversations)[0]
+  isDragging: boolean
+}) {
+  return (
+    <div
+      className="relative w-full cursor-pointer hover:bg-white/5 transition-colors group"
+      style={{
+        height: '52px',
+        marginBottom: 'calc(4px + 16px * var(--progress))',
+        transition: isDragging ? 'none' : 'margin-bottom 300ms ease-out, background-color 200ms',
+      } as any}
+    >
+      {/* Dynamic Translation Logic */}
+      <div
+        style={{
+          '--tx': 'calc(max(0px, 280px - max(60px, var(--visible-width))))',
+          transform: 'translateX(var(--tx))',
+          transition: isDragging ? 'none' : 'transform 300ms ease-out, opacity 300ms ease-out',
+        } as any}
+        className="absolute inset-0 flex items-center px-3"
+      >
+        <Avatar color={conv.color} avatar={conv.avatar} />
+
+        {/* Content - Fades in after 80px */}
+        <div
+          className="ml-3 flex-1 min-w-0"
+          style={{
+            opacity: 'calc(clamp(0, (var(--visible-width) - 80px) / 40, 1))',
+          }}
+        >
+          <div className="flex justify-between items-baseline mb-0.5">
+            <span className="font-bold text-[15px] truncate">{conv.name}</span>
+            <span className="text-[10px] opacity-40 font-medium">{conv.time}</span>
+          </div>
+          <div className="text-[13px] opacity-60 truncate leading-tight">{conv.lastMsg}</div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function App() {
   const [sidebarState, setSidebarState] = useState<SidebarState>('closed')
   const [isDragging, setIsDragging] = useState(false)
@@ -254,41 +311,7 @@ export default function App() {
 
             <div className="flex flex-col">
               {conversations.map(conv => (
-                <div
-                  key={conv.id}
-                  className="relative w-full cursor-pointer hover:bg-white/5 transition-colors group"
-                  style={{
-                    height: 'calc(52px + (72px - 52px) * var(--progress))',
-                    transition: isDragging ? 'none' : 'height 300ms ease-out, background-color 200ms',
-                  } as any}
-                >
-                  {/* Dynamic Translation Logic */}
-                  <div style={{
-                    '--tx': 'calc(max(0px, 280px - max(60px, var(--visible-width))))',
-                    transform: 'translateX(var(--tx))',
-                    transition: isDragging ? 'none' : 'transform 300ms ease-out, opacity 300ms ease-out',
-                  } as any} className="absolute inset-0 flex items-center px-3">
-
-                    {/* Avatar */}
-                    <div className={`w-11 h-11 rounded-2xl bg-gradient-to-br ${conv.color} flex items-center justify-center font-bold text-white shadow-lg border-2 border-white/10 shrink-0`}>
-                      {conv.avatar}
-                    </div>
-
-                    {/* Content - Fades in after 60px */}
-                    <div
-                      className="ml-3 flex-1 min-w-0"
-                      style={{
-                        opacity: 'calc(clamp(0, (var(--visible-width) - 80px) / 40, 1))',
-                      }}
-                    >
-                      <div className="flex justify-between items-baseline mb-0.5">
-                        <span className="font-bold text-[15px] truncate">{conv.name}</span>
-                        <span className="text-[10px] opacity-40 font-medium">{conv.time}</span>
-                      </div>
-                      <div className="text-[13px] opacity-60 truncate leading-tight">{conv.lastMsg}</div>
-                    </div>
-                  </div>
-                </div>
+                <ConversationItem key={conv.id} conv={conv} isDragging={isDragging} />
               ))}
             </div>
 
