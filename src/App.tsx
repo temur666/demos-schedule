@@ -10,7 +10,7 @@ const PEEK_WIDTH = 60
    物理层（可插拔）
 ========================= */
 
-const ENABLE_PHYSICS = true
+const ENABLE_PHYSICS = false
 
 function applyPhysics(delta: number) {
   if (!ENABLE_PHYSICS) return delta
@@ -36,6 +36,7 @@ const conversations = [
 
 export default function App() {
   const [sidebarState, setSidebarState] = useState<SidebarState>('closed')
+  const [isDragging, setIsDragging] = useState(false)
 
   const sidebarRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -67,8 +68,11 @@ export default function App() {
     drag.current.currentSidebarX = sidebarX
 
     const visibleWidth = sidebarX + FULL_WIDTH
+    const progress = Math.max(0, Math.min(1, (visibleWidth - PEEK_WIDTH) / (FULL_WIDTH - PEEK_WIDTH)))
+
     sidebarRef.current!.style.transform = `translateX(${sidebarX}px)`
     sidebarRef.current!.style.setProperty('--visible-width', `${visibleWidth}px`)
+    sidebarRef.current!.style.setProperty('--progress', `${progress}`)
     contentRef.current!.style.transform = `translateX(${visibleWidth}px)`
   }
 
@@ -82,6 +86,7 @@ export default function App() {
     if ((e.target as HTMLElement).closest('.no-drag')) return
 
     drag.current.dragging = true
+    setIsDragging(true)
     drag.current.startX = e.clientX
     drag.current.currentX = e.clientX
 
@@ -110,6 +115,7 @@ export default function App() {
   const onMouseUp = () => {
     if (!drag.current.dragging) return
     drag.current.dragging = false
+    setIsDragging(false)
 
     cancelAnimationFrame(drag.current.raf)
 
@@ -129,18 +135,22 @@ export default function App() {
     }
 
     sidebarRef.current!.style.transition =
-      'transform 320ms cubic-bezier(.2,.8,.2,1)'
+      'transform 300ms ease-out'
     contentRef.current!.style.transition =
-      'transform 320ms cubic-bezier(.2,.8,.2,1)'
+      'transform 300ms ease-out'
 
     // 强制同步一次位置，处理 state 未改变时（如拖拽距离不足）不回弹的问题
     let targetX = -FULL_WIDTH
     if (next === 'peek') targetX = -(FULL_WIDTH - PEEK_WIDTH)
     if (next === 'full') targetX = 0
 
+    const targetVisibleWidth = targetX + FULL_WIDTH
+    const targetProgress = next === 'full' ? 1 : 0
+
     sidebarRef.current!.style.transform = `translateX(${targetX}px)`
-    sidebarRef.current!.style.setProperty('--visible-width', `${targetX + FULL_WIDTH}px`)
-    contentRef.current!.style.transform = `translateX(${targetX + FULL_WIDTH}px)`
+    sidebarRef.current!.style.setProperty('--visible-width', `${targetVisibleWidth}px`)
+    sidebarRef.current!.style.setProperty('--progress', `${targetProgress}`)
+    contentRef.current!.style.transform = `translateX(${targetVisibleWidth}px)`
 
     setSidebarState(next)
   }
@@ -155,8 +165,11 @@ export default function App() {
     if (sidebarState === 'full') sidebarX = 0
 
     const visibleWidth = sidebarX + FULL_WIDTH
+    const progress = sidebarState === 'full' ? 1 : 0
+
     sidebarRef.current!.style.transform = `translateX(${sidebarX}px)`
     sidebarRef.current!.style.setProperty('--visible-width', `${visibleWidth}px`)
+    sidebarRef.current!.style.setProperty('--progress', `${progress}`)
     contentRef.current!.style.transform = `translateX(${visibleWidth}px)`
   }, [sidebarState])
 
@@ -243,12 +256,17 @@ export default function App() {
               {conversations.map(conv => (
                 <div
                   key={conv.id}
-                  className="relative h-[72px] w-full cursor-pointer hover:bg-white/5 transition-colors group"
+                  className="relative w-full cursor-pointer hover:bg-white/5 transition-colors group"
+                  style={{
+                    height: 'calc(52px + (72px - 52px) * var(--progress))',
+                    transition: isDragging ? 'none' : 'height 300ms ease-out, background-color 200ms',
+                  } as any}
                 >
                   {/* Dynamic Translation Logic */}
                   <div style={{
                     '--tx': 'calc(max(0px, 280px - max(60px, var(--visible-width))))',
                     transform: 'translateX(var(--tx))',
+                    transition: isDragging ? 'none' : 'transform 300ms ease-out, opacity 300ms ease-out',
                   } as any} className="absolute inset-0 flex items-center px-3">
 
                     {/* Avatar */}
