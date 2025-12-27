@@ -1,4 +1,4 @@
-import React from 'react';
+
 import PhoneFrame from './components/PhoneFrame';
 import CalendarPage from './pages/CalendarPage';
 
