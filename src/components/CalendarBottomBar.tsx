@@ -1,6 +1,5 @@
 import React from 'react';
 import type { ViewType } from '../stores/useCalendarPageStore';
-import { SettingsModal } from './SettingsModal';
 import { AddEventModal } from './AddEventModal';
 import type { CreateEventInput } from '../types/event';
 
@@ -34,7 +33,6 @@ export const CalendarBottomBar: React.FC<CalendarBottomBarProps> = ({
                 >
                     <span className="material-symbols-outlined text-[24px]">{isDarkMode ? 'dark_mode' : 'light_mode'}</span>
                 </button>
-                <SettingsModal />
             </div>
 
             <div className="relative flex h-12 items-center gap-1 rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/20 dark:border-white/10 px-2">
