@@ -74,14 +74,18 @@ const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({ activeDate, onA
                 return (
                     <div key={dateStr} data-date={dateStr} className="relative mb-6">
                         {/* 日期标题栏 */}
-                        <div className="sticky top-0 z-10 px-6 py-3 border-y border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/95 dark:bg-[#111]/95 backdrop-blur-md">
-                            <div className="flex items-baseline gap-2">
-                                <span className="text-lg font-bold text-gray-900 dark:text-white">{weekday}</span>
-                                <span className="text-sm text-gray-500 dark:text-gray-400">{day}</span>
+                        <div className="sticky top-0 z-10 bg-white dark:bg-black border-b border-gray-100 dark:border-white/5">
+                            <div className="px-4 py-4 flex items-center justify-between">
+                                <div className="flex items-baseline gap-2">
+                                    <h2 className="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-widest font-display-bold">
+                                        {weekday}
+                                    </h2>
+                                    <span className="text-sm text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">{day}</span>
+                                </div>
+                                {isToday && (
+                                    <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 dark:text-blue-300 dark:bg-blue-900/20 px-2 py-1 rounded-full">Today</span>
+                                )}
                             </div>
-                            {isToday && (
-                                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 dark:text-blue-300 dark:bg-blue-900/20 px-2 py-1 rounded-full">Today</span>
-                            )}
                         </div>
 
                         {/* 事件内容区：即使没有事件也保持固定留白 */}
