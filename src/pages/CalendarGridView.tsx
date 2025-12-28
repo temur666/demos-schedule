@@ -60,12 +60,14 @@ const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate, onDateC
             className="flex-1 p-0 pb-32 overflow-y-auto hide-scrollbar"
         >
             {monthGroups.map((monthGroup) => (
-                <div key={monthGroup.monthKey} className="mb-[192px]">
+                <div key={monthGroup.monthKey} className="mb-0">
                     {/* 粘性月份标题 */}
-                    <div className="sticky top-0 z-20 bg-white dark:bg-black px-4 pt-[96px] pb-[64px] border-b border-red-500/10">
-                        <h2 className="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-widest font-display-bold">
-                            {dayjs(monthGroup.monthDate).format('MMMM YYYY')}
-                        </h2>
+                    <div className="sticky top-0 z-20 bg-white dark:bg-black border-b border-red-500/10">
+                        <div className="px-4 py-4 flex items-center">
+                            <h2 className="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-widest font-display-bold">
+                                {dayjs(monthGroup.monthDate).format('MMMM YYYY')}
+                            </h2>
+                        </div>
                     </div>
 
                     {/* 该月份的所有周 */}
