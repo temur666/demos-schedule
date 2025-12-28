@@ -6,7 +6,13 @@ interface CalendarGridViewProps {
 }
 
 const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate }) => {
-    const { events } = useEvents();
+    const { events, deleteEvent } = useEvents();
+
+    const minutesToTime = (minutes: number): string => {
+        const h = Math.floor(minutes / 60);
+        const m = minutes % 60;
+        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+    };
 
     // Helper to get events for a specific day
     const getEventsForDay = (day: number) => {
@@ -47,9 +53,18 @@ const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate }) => {
                                 </div>
                                 <div className="flex flex-col gap-1">
                                     {dayEvents.map(event => (
-                                        <div key={event.id} className="w-full pl-2 py-0.5 border-l-2" style={{ borderColor: event.color }}>
-                                            <span className="text-[9px] font-medium text-gray-900 dark:text-white truncate block">{event.title}</span>
-                                            <span className="text-[8px] text-gray-400 block">{event.startTime}</span>
+                                        <div key={event.id} className="w-full pl-2 py-0.5 border-l-2 relative group/event" style={{ borderColor: event.color }}>
+                                            <span className="text-[9px] font-medium text-gray-900 dark:text-white truncate block pr-3">{event.title}</span>
+                                            <span className="text-[8px] text-gray-400 block">{minutesToTime(event.startTime)}</span>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    deleteEvent(event.id);
+                                                }}
+                                                className="absolute top-0 right-0 size-3 flex items-center justify-center rounded-full bg-red-500 text-white opacity-0 group-hover/event:opacity-100 transition-opacity"
+                                            >
+                                                <span className="material-symbols-outlined text-[8px]">close</span>
+                                            </button>
                                         </div>
                                     ))}
                                 </div>

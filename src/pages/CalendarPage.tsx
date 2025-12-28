@@ -12,13 +12,35 @@ const CalendarPage: React.FC = () => {
     const [view, setView] = useState<ViewType>('schedule');
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [activeDate, setActiveDate] = useState(new Date().toISOString().split('T')[0]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [initialModalData, setInitialModalData] = useState<{ startTime?: string, date?: string }>({});
     const { addEvent } = useEvents();
 
-    const handleAddEvent = (input: CreateEventInput) => {
+    // Time conversion utilities
+    const minutesToTime = (minutes: number): string => {
+        const h = Math.floor(minutes / 60);
+        const m = minutes % 60;
+        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+    };
+
+    const confirmCreate = (input: Omit<CreateEventInput, 'date'> & { date?: string }) => {
         addEvent({
             ...input,
-            date: activeDate // Use the currently selected date
+            date: input.date || activeDate
         });
+        setIsModalOpen(false);
+    };
+
+    const handleCreateFromBlank = (date: string, time: number) => {
+        setInitialModalData({
+            date,
+            startTime: minutesToTime(time)
+        });
+        setIsModalOpen(true);
+    };
+
+    const handleAddEvent = (input: CreateEventInput) => {
+        confirmCreate(input);
     };
 
     // Touch handling state
@@ -83,6 +105,7 @@ const CalendarPage: React.FC = () => {
         setIsSwiping(false);
     };
 
+
     const renderView = () => {
         return (
             <div
@@ -100,7 +123,12 @@ const CalendarPage: React.FC = () => {
                         case 'agenda':
                             return <CalendarAgendaView activeDate={activeDate} />;
                         case 'schedule':
-                            return <CalendarDayView activeDate={activeDate} />;
+                            return (
+                                <CalendarDayView
+                                    activeDate={activeDate}
+                                    onBlankLongPress={handleCreateFromBlank}
+                                />
+                            );
                         default:
                             return <CalendarAgendaView activeDate={activeDate} />;
                     }
@@ -227,7 +255,19 @@ const CalendarPage: React.FC = () => {
                     </button>
                 </div>
 
-                <AddEventModal onAddEvent={handleAddEvent} />
+                <AddEventModal
+                    onAddEvent={handleAddEvent}
+                    isOpen={isModalOpen}
+                    onOpenChange={(open) => {
+                        if (open && !isModalOpen) {
+                            // When opening from the floating button (not from blank long press)
+                            // we should ensure the date is set to activeDate
+                            setInitialModalData(prev => ({ ...prev, date: activeDate }));
+                        }
+                        setIsModalOpen(open);
+                    }}
+                    initialData={initialModalData}
+                />
             </div>
         </div>
     );

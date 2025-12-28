@@ -1,23 +1,22 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { CalendarEvent, CreateEventInput } from '../types/event';
+import { LocalEventRepo } from '../lib/repository';
 
 interface EventContextType {
     events: CalendarEvent[];
     addEvent: (input: CreateEventInput) => void;
     deleteEvent: (id: string) => void;
     updateEvent: (id: string, updates: Partial<CalendarEvent>) => void;
+    getEventsByDate: (date: string) => CalendarEvent[];
 }
 
 const EventContext = createContext<EventContextType | undefined>(undefined);
 
 export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [events, setEvents] = useState<CalendarEvent[]>(() => {
-        const saved = localStorage.getItem('calendar_events');
-        return saved ? JSON.parse(saved) : [];
-    });
+    const [events, setEvents] = useState<CalendarEvent[]>(() => LocalEventRepo.load());
 
     useEffect(() => {
-        localStorage.setItem('calendar_events', JSON.stringify(events));
+        LocalEventRepo.save(events);
     }, [events]);
 
     const addEvent = (input: CreateEventInput) => {
@@ -37,8 +36,12 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setEvents(prev => prev.map(event => event.id === id ? { ...event, ...updates } : event));
     };
 
+    const getEventsByDate = (date: string) => {
+        return events.filter(e => e.date === date);
+    };
+
     return (
-        <EventContext.Provider value={{ events, addEvent, deleteEvent, updateEvent }}>
+        <EventContext.Provider value={{ events, addEvent, deleteEvent, updateEvent, getEventsByDate }}>
             {children}
         </EventContext.Provider>
     );

@@ -1,8 +1,8 @@
 export interface CalendarEvent {
     id: string;
     title: string;
-    startTime: string; // Format: "HH:mm"
-    endTime: string;   // Format: "HH:mm"
+    startTime: number; // Minutes from start of day (0-1439)
+    endTime: number;   // Minutes from start of day (0-1439)
     color: string;
     date: string;      // Format: "YYYY-MM-DD"
     description?: string;

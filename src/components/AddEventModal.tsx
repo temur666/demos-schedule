@@ -7,6 +7,9 @@ import type { CreateEventInput } from '../types/event';
 
 interface AddEventModalProps {
     onAddEvent: (event: CreateEventInput) => void;
+    isOpen?: boolean;
+    onOpenChange?: (open: boolean) => void;
+    initialData?: { startTime?: string, date?: string };
 }
 
 const eventColors = [
@@ -18,12 +21,32 @@ const eventColors = [
     { name: 'Purple', value: '#6b46c1' }
 ];
 
-export function AddEventModal({ onAddEvent }: AddEventModalProps) {
-    const [isOpen, setIsOpen] = useState(false);
+export function AddEventModal({ onAddEvent, isOpen: controlledOpen, onOpenChange, initialData }: AddEventModalProps) {
+    const [internalOpen, setInternalOpen] = useState(false);
+    const isOpen = controlledOpen !== undefined ? controlledOpen : internalOpen;
+    const setIsOpen = onOpenChange || setInternalOpen;
+
     const [title, setTitle] = useState('');
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
     const [selectedColor, setSelectedColor] = useState(eventColors[0].value);
+
+    React.useEffect(() => {
+        if (isOpen && initialData) {
+            if (initialData.startTime) {
+                setStartTime(initialData.startTime);
+                // Default end time to 1 hour later
+                const [h, m] = initialData.startTime.split(':').map(Number);
+                const endH = (h + 1) % 24;
+                setEndTime(`${endH.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`);
+            }
+        }
+    }, [isOpen, initialData]);
+
+    const timeToMinutes = (timeStr: string): number => {
+        const [hours, minutes] = timeStr.split(':').map(Number);
+        return (hours * 60) + minutes;
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -40,10 +63,10 @@ export function AddEventModal({ onAddEvent }: AddEventModalProps) {
 
         onAddEvent({
             title,
-            startTime,
-            endTime,
+            startTime: timeToMinutes(startTime),
+            endTime: timeToMinutes(endTime),
             color: selectedColor,
-            date: new Date().toISOString().split('T')[0] // Default to today
+            date: initialData?.date || new Date().toISOString().split('T')[0]
         });
 
         // Reset form
