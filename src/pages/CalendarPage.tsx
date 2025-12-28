@@ -8,6 +8,7 @@ import DateWidget from '../components/DateWidget/DateWidget';
 import type { CreateEventInput } from '../types/event';
 import { useEvents } from '../contexts/useEvents';
 import { dayjs, minutesToTime, formatDate } from '../calendar/utils';
+import { motion, AnimatePresence } from 'framer-motion';
 
 
 type ViewType = 'grid' | 'agenda' | 'schedule';
@@ -116,12 +117,11 @@ const CalendarPage: React.FC = () => {
 
     const renderView = () => {
         return (
-            <div
+            <motion.div
                 key={view}
-                className="animate-fade-in flex-1 flex flex-col overflow-hidden transition-transform duration-300 ease-out"
+                className="flex-1 flex flex-col overflow-hidden"
                 style={{
                     transform: isSwiping ? `translateX(${touchOffset}px)` : 'translateX(0)',
-                    opacity: isSwiping ? Math.max(0.5, 1 - Math.abs(touchOffset) / 400) : 1
                 }}
             >
                 {(() => {
@@ -130,8 +130,11 @@ const CalendarPage: React.FC = () => {
                             return (
                                 <CalendarGridView
                                     activeDate={activeDate}
-                                    onDateClick={(date) => handleCreateFromBlank(date, 540)}
                                     onActiveDateChange={setActiveDate}
+                                    onDateDoubleClick={(date) => {
+                                        setActiveDate(date);
+                                        setView('schedule');
+                                    }}
                                 />
                             );
                         case 'agenda':
@@ -148,7 +151,7 @@ const CalendarPage: React.FC = () => {
                             return <CalendarAgendaView activeDate={activeDate} />;
                     }
                 })()}
-            </div>
+            </motion.div>
         );
     };
 
@@ -229,7 +232,9 @@ const CalendarPage: React.FC = () => {
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
             >
-                {renderView()}
+                <AnimatePresence mode="popLayout">
+                    {renderView()}
+                </AnimatePresence>
             </div>
 
             {/* Floating Bottom Bar */}
@@ -245,34 +250,28 @@ const CalendarPage: React.FC = () => {
                     <SettingsModal />
                 </div>
 
-                <div className="flex h-12 items-center gap-1 rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/20 dark:border-white/10 px-2">
-                    <button
-                        onClick={() => setView('grid')}
-                        className={`h-10 w-12 flex items-center justify-center rounded-full transition-all duration-300 ${view === 'grid'
-                            ? 'bg-black/5 dark:bg-white/10 text-gray-900 dark:text-white scale-110'
-                            : 'text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white'
-                            }`}
-                    >
-                        <span className={`material-symbols-outlined text-[20px] ${view === 'grid' ? 'font-variation-settings-fill' : ''}`}>grid_view</span>
-                    </button>
-                    <button
-                        onClick={() => setView('agenda')}
-                        className={`h-10 w-12 flex items-center justify-center rounded-full transition-all duration-300 ${view === 'agenda'
-                            ? 'bg-black/5 dark:bg-white/10 text-gray-900 dark:text-white scale-110'
-                            : 'text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white'
-                            }`}
-                    >
-                        <span className={`material-symbols-outlined text-[20px] ${view === 'agenda' ? 'font-variation-settings-fill' : ''}`}>view_agenda</span>
-                    </button>
-                    <button
-                        onClick={() => setView('schedule')}
-                        className={`h-10 w-12 flex items-center justify-center rounded-full transition-all duration-300 ${view === 'schedule'
-                            ? 'bg-black/5 dark:bg-white/10 text-gray-900 dark:text-white scale-110'
-                            : 'text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white'
-                            }`}
-                    >
-                        <span className={`material-symbols-outlined text-[20px] ${view === 'schedule' ? 'font-variation-settings-fill' : ''}`}>schedule</span>
-                    </button>
+                <div className="relative flex h-12 items-center gap-1 rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/20 dark:border-white/10 px-2">
+                    {views.map((v) => (
+                        <button
+                            key={v}
+                            onClick={() => setView(v)}
+                            className={`relative h-10 w-12 flex items-center justify-center rounded-full transition-colors duration-300 z-10 ${view === v
+                                ? 'text-gray-900 dark:text-white'
+                                : 'text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white'
+                                }`}
+                        >
+                            {view === v && (
+                                <motion.div
+                                    layoutId="active-pill"
+                                    className="absolute inset-0 bg-black/5 dark:bg-white/10 rounded-full"
+                                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                />
+                            )}
+                            <span className={`material-symbols-outlined text-[20px] ${view === v ? 'font-variation-settings-fill' : ''}`}>
+                                {v === 'grid' ? 'grid_view' : v === 'agenda' ? 'view_agenda' : 'schedule'}
+                            </span>
+                        </button>
+                    ))}
                 </div>
 
                 <AddEventModal

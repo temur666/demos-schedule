@@ -2,14 +2,15 @@ import React, { useRef, useEffect, useCallback } from 'react';
 import { useCalendarGridStore } from '../stores/useCalendarGridStore';
 import { CalendarEngine } from '../calendar/engine';
 import { dayjs, formatDate, minutesToTime } from '../calendar/utils';
+import { motion } from 'framer-motion';
 
 interface CalendarGridViewProps {
     activeDate: string;
-    onDateClick?: (date: string) => void;
+    onDateDoubleClick?: (date: string) => void;
     onActiveDateChange?: (date: string) => void;
 }
 
-const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate, onDateClick, onActiveDateChange }) => {
+const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate, onDateDoubleClick, onActiveDateChange }) => {
     const { weeks, loadMore, handleDeleteEvent, getEventsForDate } = useCalendarGridStore(activeDate);
     const containerRef = useRef<HTMLDivElement>(null);
     const lastScrollTop = useRef(0);
@@ -74,10 +75,13 @@ const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate, onDateC
                                 const isSelected = activeDate === dateStr;
 
                                 return (
-                                    <div
+                                    <motion.div
                                         key={dateStr}
                                         data-date={dateStr}
-                                        onClick={() => onDateClick?.(dateStr)}
+                                        layoutId={isSelected ? "calendar-view-container" : undefined}
+                                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                        onClick={() => onActiveDateChange?.(dateStr)}
+                                        onDoubleClick={() => onDateDoubleClick?.(dateStr)}
                                         className={`relative bg-white dark:bg-black min-h-[140px] p-3 flex flex-col group hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer ${isSelected ? 'ring-2 ring-inset ring-red-500 z-10' : ''}`}
                                     >
                                         <div className="flex justify-between items-start mb-2">
@@ -103,7 +107,7 @@ const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate, onDateC
                                                 </div>
                                             ))}
                                         </div>
-                                    </div>
+                                    </motion.div>
                                 );
                             })}
                         </div>
