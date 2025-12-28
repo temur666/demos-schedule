@@ -3,19 +3,22 @@ import { useEvents } from '../contexts/useEvents';
 import { CalendarEngine } from '../calendar/engine';
 import { dayjs } from '../calendar/utils';
 
+import { useSettings } from '../contexts/SettingsContext';
+
 /**
  * Store (ViewModel) for CalendarGridView
  * 厨师长：负责准备数据、处理业务逻辑
  */
 export const useCalendarGridStore = (activeDate: string) => {
     const { events, deleteEvent } = useEvents();
+    const { weekStart } = useSettings();
 
     // State: 计算当前视图的周数据
     const weeks = useMemo(() => {
         const viewDate = dayjs(activeDate).toDate();
         const range = CalendarEngine.getVisibleRange(viewDate, 'month');
         return CalendarEngine.getWeeksInRange(range);
-    }, [activeDate]);
+    }, [activeDate, weekStart]);
 
     // State: 当前月份（用于判断日期是否属于当前月）
     const currentMonth = useMemo(() => {

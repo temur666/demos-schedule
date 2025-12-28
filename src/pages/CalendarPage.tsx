@@ -3,10 +3,13 @@ import CalendarGridView from './CalendarGridView';
 import CalendarAgendaView from './CalendarAgendaView';
 import CalendarDayView from './CalendarDayView';
 import { AddEventModal } from '../components/AddEventModal';
+import { SettingsModal } from '../components/SettingsModal';
 import type { CreateEventInput } from '../types/event';
 import { useEvents } from '../contexts/useEvents';
 import { CalendarEngine } from '../calendar/engine';
 import { dayjs, minutesToTime, formatDate } from '../calendar/utils';
+
+import { useSettings } from '../contexts/SettingsContext';
 
 type ViewType = 'grid' | 'agenda' | 'schedule';
 
@@ -17,6 +20,7 @@ const CalendarPage: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [initialModalData, setInitialModalData] = useState<{ startTime?: string, date?: string }>({});
     const { addEvent } = useEvents();
+    const { weekStart } = useSettings();
 
     const confirmCreate = (input: Omit<CreateEventInput, 'date'> & { date?: string }) => {
         addEvent({
@@ -49,8 +53,10 @@ const CalendarPage: React.FC = () => {
     };
 
     const viewDate = dayjs(activeDate).toDate();
-    const range = CalendarEngine.getVisibleRange(viewDate);
-    const weekDays = CalendarEngine.getDaysInRange(range);
+    const weekDays = React.useMemo(() => {
+        const range = CalendarEngine.getVisibleRange(viewDate);
+        return CalendarEngine.getDaysInRange(range);
+    }, [activeDate, weekStart]);
 
     // Touch handling state
     const [touchStart, setTouchStart] = useState<{ x: number, y: number } | null>(null);
@@ -255,12 +261,16 @@ const CalendarPage: React.FC = () => {
 
             {/* Floating Bottom Bar */}
             <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-4">
-                <button
-                    onClick={() => setIsDarkMode(!isDarkMode)}
-                    className="size-12 rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/20 dark:border-white/10 flex items-center justify-center text-gray-900 dark:text-white hover:scale-105 transition-all active:scale-95"
-                >
-                    <span className="material-symbols-outlined text-[24px]">{isDarkMode ? 'dark_mode' : 'light_mode'}</span>
-                </button>
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => setIsDarkMode(!isDarkMode)}
+                        className="size-12 rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/20 dark:border-white/10 flex items-center justify-center text-gray-900 dark:text-white hover:scale-105 transition-all active:scale-95"
+                    >
+                        <span className="material-symbols-outlined text-[24px]">{isDarkMode ? 'dark_mode' : 'light_mode'}</span>
+                    </button>
+
+                    <SettingsModal />
+                </div>
 
                 <div className="flex h-12 items-center gap-1 rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/20 dark:border-white/10 px-2">
                     <button

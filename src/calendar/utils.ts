@@ -1,15 +1,10 @@
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
-import updateLocale from 'dayjs/plugin/updateLocale';
+import './locale'; // Initialize locale settings
 
 dayjs.extend(isBetween);
 dayjs.extend(weekOfYear);
-dayjs.extend(updateLocale);
-
-dayjs.updateLocale('en', {
-    weekStart: 1,
-});
 
 export const formatDate = (date: dayjs.Dayjs | Date | string | number, format = 'YYYY-MM-DD') => {
     return dayjs(date).format(format);
