@@ -4,12 +4,11 @@ import CalendarAgendaView from './CalendarAgendaView';
 import CalendarDayView from './CalendarDayView';
 import { AddEventModal } from '../components/AddEventModal';
 import { SettingsModal } from '../components/SettingsModal';
+import DateWidget from '../components/DateWidget/DateWidget';
 import type { CreateEventInput } from '../types/event';
 import { useEvents } from '../contexts/useEvents';
-import { CalendarEngine } from '../calendar/engine';
 import { dayjs, minutesToTime, formatDate } from '../calendar/utils';
 
-import { useSettings } from '../contexts/SettingsContext';
 
 type ViewType = 'grid' | 'agenda' | 'schedule';
 
@@ -20,7 +19,6 @@ const CalendarPage: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [initialModalData, setInitialModalData] = useState<{ startTime?: string, date?: string }>({});
     const { addEvent } = useEvents();
-    const { weekStart } = useSettings();
 
     const confirmCreate = (input: Omit<CreateEventInput, 'date'> & { date?: string }) => {
         addEvent({
@@ -52,11 +50,6 @@ const CalendarPage: React.FC = () => {
         setActiveDate(formatDate(dayjs(activeDate).add(1, unit)));
     };
 
-    const viewDate = dayjs(activeDate).toDate();
-    const weekDays = React.useMemo(() => {
-        const range = CalendarEngine.getVisibleRange(viewDate);
-        return CalendarEngine.getDaysInRange(range);
-    }, [activeDate, weekStart]);
 
     // Touch handling state
     const [touchStart, setTouchStart] = useState<{ x: number, y: number } | null>(null);
@@ -138,15 +131,17 @@ const CalendarPage: React.FC = () => {
                                 <CalendarGridView
                                     activeDate={activeDate}
                                     onDateClick={(date) => handleCreateFromBlank(date, 540)}
+                                    onActiveDateChange={setActiveDate}
                                 />
                             );
                         case 'agenda':
-                            return <CalendarAgendaView activeDate={activeDate} />;
+                            return <CalendarAgendaView activeDate={activeDate} onActiveDateChange={setActiveDate} />;
                         case 'schedule':
                             return (
                                 <CalendarDayView
                                     activeDate={activeDate}
                                     onBlankLongPress={handleCreateFromBlank}
+                                    onActiveDateChange={setActiveDate}
                                 />
                             );
                         default:
@@ -226,28 +221,6 @@ const CalendarPage: React.FC = () => {
                     </div>
                 )}
 
-                {/* Week Day Selector */}
-                <div className="mt-3 flex justify-between items-center px-1 overflow-x-auto hide-scrollbar pb-1">
-                    {weekDays.map((date, i) => {
-                        const dateStr = formatDate(date);
-                        const isSelected = activeDate === dateStr;
-                        return (
-                            <div
-                                key={i}
-                                onClick={() => setActiveDate(dateStr)}
-                                className={`flex flex-col items-center gap-1 min-w-[40px] cursor-pointer transition-all duration-200 ${isSelected ? 'scale-110' : 'opacity-50 hover:opacity-80'}`}
-                            >
-                                <span className={`text-[10px] uppercase ${isSelected ? 'font-bold text-gray-900 dark:text-white' : 'font-medium text-gray-500'}`}>{dayjs(date).format('dd').charAt(0)}</span>
-                                <div className={`flex items-center justify-center size-8 rounded-full text-[16px] transition-all ${isSelected
-                                    ? 'bg-red-500 font-semibold text-white shadow-md'
-                                    : 'font-medium text-gray-900 dark:text-white'
-                                    }`}>
-                                    {dayjs(date).date()}
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
             </header>
 
             <div
@@ -305,6 +278,7 @@ const CalendarPage: React.FC = () => {
                 <AddEventModal
                     onAddEvent={handleAddEvent}
                     isOpen={isModalOpen}
+                    initialData={initialModalData}
                     onOpenChange={(open) => {
                         if (open && !isModalOpen) {
                             // When opening from the floating button (not from blank long press)
@@ -313,9 +287,10 @@ const CalendarPage: React.FC = () => {
                         }
                         setIsModalOpen(open);
                     }}
-                    initialData={initialModalData}
                 />
             </div>
+
+            <DateWidget date={activeDate} />
         </div>
     );
 };

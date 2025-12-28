@@ -1,58 +1,90 @@
-import React from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import { useCalendarGridStore } from '../stores/useCalendarGridStore';
 import { CalendarEngine } from '../calendar/engine';
 import { dayjs, formatDate, minutesToTime } from '../calendar/utils';
 
-/**
- * UI (View) - CalendarGridView
- * 服务员：只负责展示，不处理业务逻辑
- */
 interface CalendarGridViewProps {
     activeDate: string;
     onDateClick?: (date: string) => void;
+    onActiveDateChange?: (date: string) => void;
 }
 
-const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate, onDateClick }) => {
-    // Store: 从厨师长获取准备好的数据
-    const { weeks, currentMonth, handleDeleteEvent, getEventsForDate } = useCalendarGridStore(activeDate);
+const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate, onDateClick, onActiveDateChange }) => {
+    const { weeks, loadMore, handleDeleteEvent, getEventsForDate } = useCalendarGridStore(activeDate);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const lastScrollTop = useRef(0);
+    const prevHeight = useRef(0);
+
+    // 向上滚动加载时的位置补偿：防止页面跳动
+    useEffect(() => {
+        if (containerRef.current && prevHeight.current > 0) {
+            const newHeight = containerRef.current.scrollHeight;
+            if (newHeight > prevHeight.current && containerRef.current.scrollTop < 200) {
+                containerRef.current.scrollTop += (newHeight - prevHeight.current);
+            }
+        }
+        prevHeight.current = containerRef.current?.scrollHeight || 0;
+    }, [weeks]);
+
+    const handleScroll = useCallback(() => {
+        if (!containerRef.current) return;
+        const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+
+        // 1. 触发加载更多
+        if (scrollTop + clientHeight > scrollHeight - 600) {
+            loadMore('down');
+        } else if (scrollTop < 300 && scrollTop < lastScrollTop.current) {
+            loadMore('up');
+        }
+        lastScrollTop.current = scrollTop;
+
+        // 2. 根据滚动位置更新 activeDate (检测视图中心位置的日期)
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const centerY = containerRect.top + containerRect.height / 2;
+
+        const elements = containerRef.current.querySelectorAll('[data-date]');
+        for (const el of Array.from(elements)) {
+            const rect = el.getBoundingClientRect();
+            if (rect.top <= centerY && rect.bottom >= centerY) {
+                const date = el.getAttribute('data-date');
+                if (date && date !== activeDate) onActiveDateChange?.(date);
+                break;
+            }
+        }
+    }, [activeDate, loadMore, onActiveDateChange]);
 
     return (
-        <main className="flex-1 p-0 pb-32 overflow-y-auto hide-scrollbar">
+        <main
+            ref={containerRef}
+            onScroll={handleScroll}
+            className="flex-1 p-0 pb-32 overflow-y-auto hide-scrollbar"
+        >
             {weeks.map((weekDays, weekIdx) => {
                 const weekNum = CalendarEngine.getWeekNumber(weekDays[0]);
                 return (
                     <div key={weekIdx} className="mb-0">
-                        <div className="px-6 py-4 bg-gray-50/50 dark:bg-white/5 border-b border-gray-100 dark:border-white/5 flex items-center gap-3">
-                            <span className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">Week {weekNum}</span>
-                            <span className="h-px flex-1 bg-gray-200 dark:bg-white/10"></span>
-                        </div>
                         <div className="grid grid-cols-3 gap-px bg-gray-100 dark:bg-white/10 border-b border-gray-100 dark:border-white/10">
-                            <div className="col-span-2 relative bg-gray-50 dark:bg-white/5 min-h-[140px] p-4 flex flex-col justify-start group hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
-                                <div className="flex items-center gap-2 mb-3">
-                                    <span className="material-symbols-outlined text-gray-400 text-sm">edit_note</span>
-                                    <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Weekly Planning</span>
-                                </div>
-                                <div className="flex-1 border-l-2 border-dashed border-gray-300 dark:border-gray-600 pl-3 py-1">
-                                    <p className="text-[10px] text-gray-400 italic">Tap to add goals...</p>
-                                </div>
+                            <div className="col-span-2 relative bg-gray-50 dark:bg-white/5 min-h-[140px] p-4 flex flex-col justify-between group hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
+                                <span className="text-2xl font-bold text-gray-900 dark:text-white uppercase tracking-widest font-display-bold">Week {weekNum}</span>
+                                <span className="text-[10px] text-gray-400 uppercase tracking-wider">Weekly Planning</span>
                             </div>
                             {weekDays.map(date => {
                                 const dayEvents = getEventsForDate(date);
                                 const dateStr = formatDate(date);
                                 const isSelected = activeDate === dateStr;
-                                const isCurrentMonth = dayjs(date).isSame(currentMonth, 'month');
 
                                 return (
                                     <div
                                         key={dateStr}
+                                        data-date={dateStr}
                                         onClick={() => onDateClick?.(dateStr)}
-                                        className={`relative bg-white dark:bg-black min-h-[140px] p-3 flex flex-col group hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer ${isSelected ? 'ring-2 ring-inset ring-red-500 z-10' : ''} ${!isCurrentMonth ? 'opacity-40' : ''}`}
+                                        className={`relative bg-white dark:bg-black min-h-[140px] p-3 flex flex-col group hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer ${isSelected ? 'ring-2 ring-inset ring-red-500 z-10' : ''}`}
                                     >
                                         <div className="flex justify-between items-start mb-2">
                                             <span className="text-[10px] font-semibold text-gray-400 uppercase">
                                                 {dayjs(date).format('ddd')}
                                             </span>
-                                            <span className={`text-sm font-semibold ${isSelected ? 'text-red-500' : 'text-gray-900 dark:text-white'}`}>{dayjs(date).date()}</span>
+                                            <span className={`text-3xl font-black font-serif-art ${isSelected ? 'text-red-500' : 'text-gray-900 dark:text-white'}`}>{dayjs(date).date()}</span>
                                         </div>
                                         <div className="flex flex-col gap-1">
                                             {dayEvents.map(event => (

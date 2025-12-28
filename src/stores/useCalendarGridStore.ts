@@ -1,47 +1,53 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import { useEvents } from '../contexts/useEvents';
 import { CalendarEngine } from '../calendar/engine';
-import { dayjs } from '../calendar/utils';
-
+import { dayjs, formatDate } from '../calendar/utils';
 import { useSettings } from '../contexts/SettingsContext';
 
-/**
- * Store (ViewModel) for CalendarGridView
- * 厨师长：负责准备数据、处理业务逻辑
- */
 export const useCalendarGridStore = (activeDate: string) => {
     const { events, deleteEvent } = useEvents();
     const { weekStart } = useSettings();
 
-    // State: 计算当前视图的周数据
-    const weeks = useMemo(() => {
-        const viewDate = dayjs(activeDate).toDate();
-        const range = CalendarEngine.getVisibleRange(viewDate, 'month');
-        return CalendarEngine.getWeeksInRange(range);
-    }, [activeDate, weekStart]);
+    const [months, setMonths] = useState<Date[]>(() => {
+        const current = dayjs(activeDate).startOf('month').toDate();
+        return [dayjs(current).subtract(1, 'month').toDate(), current, dayjs(current).add(1, 'month').toDate()];
+    });
 
-    // State: 当前月份（用于判断日期是否属于当前月）
-    const currentMonth = useMemo(() => {
-        return dayjs(activeDate).toDate();
+    useEffect(() => {
+        const date = dayjs(activeDate);
+        if (!months.some(m => dayjs(m).isSame(date, 'month'))) {
+            const current = date.startOf('month').toDate();
+            setMonths([dayjs(current).subtract(1, 'month').toDate(), current, dayjs(current).add(1, 'month').toDate()]);
+        }
     }, [activeDate]);
 
-    // Action: 删除事件
-    const handleDeleteEvent = (eventId: string) => {
-        deleteEvent(eventId);
-    };
+    const weeks = useMemo(() => {
+        const allWeeks: Date[][] = [];
+        const seenWeeks = new Set<string>();
+        months.forEach(month => {
+            const range = CalendarEngine.getVisibleRange(month, 'month');
+            CalendarEngine.getWeeksInRange(range).forEach(week => {
+                const key = formatDate(week[0]);
+                if (!seenWeeks.has(key)) {
+                    allWeeks.push(week);
+                    seenWeeks.add(key);
+                }
+            });
+        });
+        return allWeeks.sort((a, b) => a[0].getTime() - b[0].getTime());
+    }, [months, weekStart]);
 
-    // Utils: 获取指定日期的事件
-    const getEventsForDate = (date: Date) => {
-        return CalendarEngine.filterEventsForDate(events, date);
-    };
+    const loadMore = useCallback((direction: 'up' | 'down') => {
+        setMonths(prev => {
+            if (direction === 'down') return [...prev, dayjs(prev[prev.length - 1]).add(1, 'month').toDate()];
+            return [dayjs(prev[0]).subtract(1, 'month').toDate(), ...prev];
+        });
+    }, []);
 
     return {
-        // State
         weeks,
-        currentMonth,
-        // Actions
-        handleDeleteEvent,
-        // Utils
-        getEventsForDate,
+        loadMore,
+        handleDeleteEvent: deleteEvent,
+        getEventsForDate: (date: Date) => CalendarEngine.filterEventsForDate(events, date),
     };
 };
