@@ -85,7 +85,7 @@ const CalendarDayView: React.FC<CalendarDayViewProps> = ({ activeDate, onBlankLo
                             className="w-full relative border-b-8 border-gray-50 dark:border-white/5"
                         >
                             {/* Day Header */}
-                            <div className="sticky top-0 z-10 bg-white dark:bg-black border-b border-gray-100 dark:border-white/10">
+                            <div className="sticky top-0 z-10 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/10">
                                 <div className="px-4 py-4 flex items-center justify-between">
                                     <h2 className={`text-3xl font-black uppercase tracking-widest font-display-bold ${isToday ? 'text-red-500' : 'text-gray-900 dark:text-white'}`}>
                                         {dayjs(day).format('dddd, MMMM D')}

@@ -62,7 +62,7 @@ const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate, onDateC
             {monthGroups.map((monthGroup) => (
                 <div key={monthGroup.monthKey} className="mb-0">
                     {/* 粘性月份标题 */}
-                    <div className="sticky top-0 z-20 bg-white dark:bg-black border-b border-red-500/10">
+                    <div className="sticky top-0 z-20 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-red-500/10">
                         <div className="px-4 py-4 flex items-center">
                             <h2 className="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-widest font-display-bold">
                                 {dayjs(monthGroup.monthDate).format('MMMM YYYY')}

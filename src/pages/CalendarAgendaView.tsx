@@ -74,7 +74,7 @@ const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({ activeDate, onA
                 return (
                     <div key={dateStr} data-date={dateStr} className="relative mb-6">
                         {/* 日期标题栏 */}
-                        <div className="sticky top-0 z-10 bg-white dark:bg-black border-b border-gray-100 dark:border-white/5">
+                        <div className="sticky top-0 z-10 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/5">
                             <div className="px-4 py-4 flex items-center justify-between">
                                 <div className="flex items-baseline gap-2">
                                     <h2 className="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-widest font-display-bold">
