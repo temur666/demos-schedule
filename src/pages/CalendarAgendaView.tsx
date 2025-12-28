@@ -70,17 +70,13 @@ const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({ activeDate, onA
             {days.map(date => {
                 const { weekday, day, isToday, dateStr } = getDayInfo(date);
                 const dayEvents = getEventsForDate(date);
-                const isActive = dateStr === activeDate;
 
                 return (
-                    <div key={dateStr} data-date={dateStr} className={`relative mb-6 ${isActive ? 'ring-2 ring-red-500/20 rounded-xl' : ''}`}>
+                    <div key={dateStr} data-date={dateStr} className="relative mb-6">
                         {/* 日期标题栏 */}
-                        <div className={`sticky top-0 z-10 px-6 py-3 border-y border-gray-100 dark:border-white/5 flex items-center justify-between ${isActive
-                            ? 'bg-red-50/95 dark:bg-red-900/20 backdrop-blur-md'
-                            : 'bg-gray-50/95 dark:bg-[#111]/95 backdrop-blur-md'
-                            }`}>
+                        <div className="sticky top-0 z-10 px-6 py-3 border-y border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/95 dark:bg-[#111]/95 backdrop-blur-md">
                             <div className="flex items-baseline gap-2">
-                                <span className={`text-lg font-bold ${isActive ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white'}`}>{weekday}</span>
+                                <span className="text-lg font-bold text-gray-900 dark:text-white">{weekday}</span>
                                 <span className="text-sm text-gray-500 dark:text-gray-400">{day}</span>
                             </div>
                             {isToday && (
