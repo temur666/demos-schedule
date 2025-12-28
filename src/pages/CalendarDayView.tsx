@@ -1,5 +1,7 @@
 import React from 'react';
-import { useEvents } from '../contexts/EventContext';
+import { useEvents } from '../contexts/useEvents';
+import { CalendarEngine } from '../calendar/engine';
+import { dayjs, minutesToTime } from '../calendar/utils';
 
 interface CalendarDayViewProps {
     activeDate: string;
@@ -9,13 +11,8 @@ interface CalendarDayViewProps {
 const CalendarDayView: React.FC<CalendarDayViewProps> = ({ activeDate, onBlankLongPress }) => {
     const { events, deleteEvent } = useEvents();
 
-    const dayEvents = events.filter(event => event.date === activeDate);
-
-    const minutesToTime = (minutes: number): string => {
-        const h = Math.floor(minutes / 60);
-        const m = minutes % 60;
-        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-    };
+    const viewDate = dayjs(activeDate).toDate();
+    const dayEvents = CalendarEngine.filterEventsForDate(events, viewDate);
 
     const calculatePosition = (minutes: number) => minutes;
 

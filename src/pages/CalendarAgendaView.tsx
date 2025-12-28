@@ -1,5 +1,6 @@
 import React from 'react';
-import { useEvents } from '../contexts/EventContext';
+import { useEvents } from '../contexts/useEvents';
+import { dayjs, minutesToTime } from '../calendar/utils';
 
 interface CalendarAgendaViewProps {
     activeDate: string;
@@ -7,12 +8,6 @@ interface CalendarAgendaViewProps {
 
 const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({ activeDate }) => {
     const { events, deleteEvent } = useEvents();
-
-    const minutesToTime = (minutes: number): string => {
-        const h = Math.floor(minutes / 60);
-        const m = minutes % 60;
-        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-    };
 
     // Group events by date
     const groupedEvents = events.reduce((acc, event) => {
@@ -27,12 +22,12 @@ const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({ activeDate }) =
     // Sort dates
     const sortedDates = Object.keys(groupedEvents).sort();
 
-    const formatDate = (dateStr: string) => {
-        const date = new Date(dateStr);
+    const getDayInfo = (dateStr: string) => {
+        const d = dayjs(dateStr);
         return {
-            weekday: date.toLocaleDateString('en-US', { weekday: 'long' }),
-            day: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-            isToday: dateStr === new Date().toISOString().split('T')[0]
+            weekday: d.format('dddd'),
+            day: d.format('MMM D'),
+            isToday: d.isSame(dayjs(), 'day')
         };
     };
 
@@ -45,7 +40,7 @@ const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({ activeDate }) =
                 </div>
             ) : (
                 sortedDates.map(dateStr => {
-                    const { weekday, day, isToday } = formatDate(dateStr);
+                    const { weekday, day, isToday } = getDayInfo(dateStr);
                     const dayEvents = groupedEvents[dateStr];
 
                     return (

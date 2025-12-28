@@ -4,6 +4,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 import type { CreateEventInput } from '../types/event';
+import { timeToMinutes, formatDate } from '../calendar/utils';
 
 interface AddEventModalProps {
     onAddEvent: (event: CreateEventInput) => void;
@@ -43,11 +44,6 @@ export function AddEventModal({ onAddEvent, isOpen: controlledOpen, onOpenChange
         }
     }, [isOpen, initialData]);
 
-    const timeToMinutes = (timeStr: string): number => {
-        const [hours, minutes] = timeStr.split(':').map(Number);
-        return (hours * 60) + minutes;
-    };
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -66,7 +62,7 @@ export function AddEventModal({ onAddEvent, isOpen: controlledOpen, onOpenChange
             startTime: timeToMinutes(startTime),
             endTime: timeToMinutes(endTime),
             color: selectedColor,
-            date: initialData?.date || new Date().toISOString().split('T')[0]
+            date: initialData?.date || formatDate(new Date())
         });
 
         // Reset form

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import type { CalendarEvent, CreateEventInput } from '../types/event';
 import { LocalEventRepo } from '../lib/repository';
 
@@ -10,7 +10,7 @@ interface EventContextType {
     getEventsByDate: (date: string) => CalendarEvent[];
 }
 
-const EventContext = createContext<EventContextType | undefined>(undefined);
+export const EventContext = createContext<EventContextType | undefined>(undefined);
 
 export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [events, setEvents] = useState<CalendarEvent[]>(() => LocalEventRepo.load());
@@ -39,7 +39,6 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const getEventsByDate = (date: string) => {
         return events.filter(e => e.date === date);
     };
-
     return (
         <EventContext.Provider value={{ events, addEvent, deleteEvent, updateEvent, getEventsByDate }}>
             {children}
@@ -47,10 +46,6 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     );
 };
 
-export const useEvents = () => {
-    const context = useContext(EventContext);
-    if (!context) {
-        throw new Error('useEvents must be used within an EventProvider');
-    }
-    return context;
-};
+// NOTE: useEvents hook has been moved to a separate file (src/contexts/useEvents.ts) to avoid Fast Refresh conflicts.
+// The EventContext now only provides the EventProvider component.
+// Exported hook is no longer defined here.

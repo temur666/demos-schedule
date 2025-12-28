@@ -4,24 +4,19 @@ import CalendarAgendaView from './CalendarAgendaView';
 import CalendarDayView from './CalendarDayView';
 import { AddEventModal } from '../components/AddEventModal';
 import type { CreateEventInput } from '../types/event';
-import { useEvents } from '../contexts/EventContext';
+import { useEvents } from '../contexts/useEvents';
+import { CalendarEngine } from '../calendar/engine';
+import { dayjs, minutesToTime, formatDate } from '../calendar/utils';
 
 type ViewType = 'grid' | 'agenda' | 'schedule';
 
 const CalendarPage: React.FC = () => {
     const [view, setView] = useState<ViewType>('schedule');
     const [isDarkMode, setIsDarkMode] = useState(false);
-    const [activeDate, setActiveDate] = useState(new Date().toISOString().split('T')[0]);
+    const [activeDate, setActiveDate] = useState(formatDate(new Date()));
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [initialModalData, setInitialModalData] = useState<{ startTime?: string, date?: string }>({});
     const { addEvent } = useEvents();
-
-    // Time conversion utilities
-    const minutesToTime = (minutes: number): string => {
-        const h = Math.floor(minutes / 60);
-        const m = minutes % 60;
-        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-    };
 
     const confirmCreate = (input: Omit<CreateEventInput, 'date'> & { date?: string }) => {
         addEvent({
@@ -42,6 +37,20 @@ const CalendarPage: React.FC = () => {
     const handleAddEvent = (input: CreateEventInput) => {
         confirmCreate(input);
     };
+
+    const navigatePrevious = () => {
+        const unit = view === 'grid' ? 'month' : 'day';
+        setActiveDate(formatDate(dayjs(activeDate).subtract(1, unit)));
+    };
+
+    const navigateNext = () => {
+        const unit = view === 'grid' ? 'month' : 'day';
+        setActiveDate(formatDate(dayjs(activeDate).add(1, unit)));
+    };
+
+    const viewDate = dayjs(activeDate).toDate();
+    const range = CalendarEngine.getVisibleRange(viewDate);
+    const weekDays = CalendarEngine.getDaysInRange(range);
 
     // Touch handling state
     const [touchStart, setTouchStart] = useState<{ x: number, y: number } | null>(null);
@@ -147,63 +156,86 @@ const CalendarPage: React.FC = () => {
             >
                 {view === 'schedule' ? (
                     <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1 text-red-500 dark:text-red-400 cursor-pointer active:opacity-60 transition-opacity">
+                        <button
+                            onClick={navigatePrevious}
+                            className="flex items-center gap-1 text-red-500 dark:text-red-400 cursor-pointer active:opacity-60 transition-opacity"
+                        >
                             <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>chevron_left</span>
-                            <span className="text-[17px] font-normal">October</span>
-                        </div>
-                        <div className="flex flex-col items-center">
-                            <span className="text-[17px] font-semibold text-gray-900 dark:text-white">Wednesday</span>
-                            <span className="text-[11px] text-gray-500 dark:text-gray-400">Oct 3, 2023</span>
-                        </div>
-                        <button className="flex size-8 items-center justify-center rounded-full text-red-500 dark:text-red-400 active:bg-red-50 dark:active:bg-red-900/20 transition-colors">
-                            <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>search</span>
+                            <span className="text-[17px] font-normal">{dayjs(activeDate).format('MMMM')}</span>
                         </button>
+                        <div className="flex flex-col items-center">
+                            <span className="text-[17px] font-semibold text-gray-900 dark:text-white">{dayjs(activeDate).format('dddd')}</span>
+                            <span className="text-[11px] text-gray-500 dark:text-gray-400">{dayjs(activeDate).format('MMM D, YYYY')}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                            <button className="flex size-8 items-center justify-center rounded-full text-red-500 dark:text-red-400 active:bg-red-50 dark:active:bg-red-900/20 transition-colors">
+                                <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>search</span>
+                            </button>
+                            <button
+                                onClick={navigateNext}
+                                className="flex size-8 items-center justify-center rounded-full text-red-500 dark:text-red-400 active:bg-red-50 dark:active:bg-red-900/20 transition-colors"
+                            >
+                                <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>chevron_right</span>
+                            </button>
+                        </div>
                     </div>
                 ) : (
                     <div className="flex items-center justify-between">
-                        <button className="flex size-8 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors active:scale-90">
-                            <span className="material-symbols-outlined text-gray-900 dark:text-white" style={{ fontSize: '20px' }}>search</span>
-                        </button>
+                        <div className="flex items-center gap-1">
+                            <button className="flex size-8 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors active:scale-90">
+                                <span className="material-symbols-outlined text-gray-900 dark:text-white" style={{ fontSize: '20px' }}>search</span>
+                            </button>
+                            <button
+                                onClick={navigatePrevious}
+                                className="flex size-8 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors active:scale-90"
+                            >
+                                <span className="material-symbols-outlined text-gray-900 dark:text-white" style={{ fontSize: '20px' }}>chevron_left</span>
+                            </button>
+                        </div>
                         <div className="flex items-center gap-2">
                             <button className="flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-semibold hover:bg-gray-50 dark:hover:bg-white/5 transition-colors active:bg-gray-100 dark:active:bg-white/10">
-                                October 2023
+                                {dayjs(activeDate).format('MMMM YYYY')}
                                 <span className="material-symbols-outlined text-gray-400" style={{ fontSize: '18px' }}>expand_more</span>
                             </button>
                         </div>
-                        <button className="flex size-8 items-center justify-center rounded-full overflow-hidden border border-gray-200 dark:border-white/20 active:scale-90 transition-transform">
-                            <div
-                                className="size-full bg-cover bg-center"
-                                style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuB31Yr33XMic1Ymy_L4WodOwMOW2iaAArSmNluP-jlvzSV4e5sLf14xg9MnxJzNJrbNQqkgSfTorVLKkNvr5Il3VGmtjQku9xZYDMg078yY0RRMcmuDMof3lGXPrQg26W5x8liYc-7DnpDKOsh6dE2a9RIIB3bXDMEwzTri1ix_NyTqO4QwNBfplBYDoVPCN59XkCEIVQI3Kcj3zq0mk68FCVLCCvD2vetfPppb9_8RVHb06sh1lPqT1T73CN1AV54JJl38k1l6PQs")' }}
-                            ></div>
-                        </button>
+                        <div className="flex items-center gap-1">
+                            <button
+                                onClick={navigateNext}
+                                className="flex size-8 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors active:scale-90"
+                            >
+                                <span className="material-symbols-outlined text-gray-900 dark:text-white" style={{ fontSize: '20px' }}>chevron_right</span>
+                            </button>
+                            <button className="flex size-8 items-center justify-center rounded-full overflow-hidden border border-gray-200 dark:border-white/20 active:scale-90 transition-transform">
+                                <div
+                                    className="size-full bg-cover bg-center"
+                                    style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuB31Yr33XMic1Ymy_L4WodOwMOW2iaAArSmNluP-jlvzSV4e5sLf14xg9MnxJzNJrbNQqkgSfTorVLKkNvr5Il3VGmtjQku9xZYDMg078yY0RRMcmuDMof3lGXPrQg26W5x8liYc-7DnpDKOsh6dE2a9RIIB3bXDMEwzTri1ix_NyTqO4QwNBfplBYDoVPCN59XkCEIVQI3Kcj3zq0mk68FCVLCCvD2vetfPppb9_8RVHb06sh1lPqT1T73CN1AV54JJl38k1l6PQs")' }}
+                                ></div>
+                            </button>
+                        </div>
                     </div>
                 )}
 
                 {/* Week Day Selector */}
                 <div className="mt-3 flex justify-between items-center px-1 overflow-x-auto hide-scrollbar pb-1">
-                    {[
-                        { day: 'S', date: '2023-10-01' },
-                        { day: 'M', date: '2023-10-02' },
-                        { day: 'W', date: '2023-10-03' },
-                        { day: 'T', date: '2023-10-04' },
-                        { day: 'F', date: '2023-10-05' },
-                        { day: 'S', date: '2023-10-06' },
-                        { day: 'S', date: '2023-10-07' },
-                    ].map((item, i) => (
-                        <div
-                            key={i}
-                            onClick={() => setActiveDate(item.date)}
-                            className={`flex flex-col items-center gap-1 min-w-[40px] cursor-pointer transition-all duration-200 ${activeDate === item.date ? 'scale-110' : 'opacity-50 hover:opacity-80'}`}
-                        >
-                            <span className={`text-[10px] uppercase ${activeDate === item.date ? 'font-bold text-gray-900 dark:text-white' : 'font-medium text-gray-500'}`}>{item.day}</span>
-                            <div className={`flex items-center justify-center size-8 rounded-full text-[16px] transition-all ${activeDate === item.date
-                                ? 'bg-red-500 font-semibold text-white shadow-md'
-                                : 'font-medium text-gray-900 dark:text-white'
-                                }`}>
-                                {item.date.split('-')[2]}
+                    {weekDays.map((date, i) => {
+                        const dateStr = formatDate(date);
+                        const isSelected = activeDate === dateStr;
+                        return (
+                            <div
+                                key={i}
+                                onClick={() => setActiveDate(dateStr)}
+                                className={`flex flex-col items-center gap-1 min-w-[40px] cursor-pointer transition-all duration-200 ${isSelected ? 'scale-110' : 'opacity-50 hover:opacity-80'}`}
+                            >
+                                <span className={`text-[10px] uppercase ${isSelected ? 'font-bold text-gray-900 dark:text-white' : 'font-medium text-gray-500'}`}>{dayjs(date).format('dd').charAt(0)}</span>
+                                <div className={`flex items-center justify-center size-8 rounded-full text-[16px] transition-all ${isSelected
+                                    ? 'bg-red-500 font-semibold text-white shadow-md'
+                                    : 'font-medium text-gray-900 dark:text-white'
+                                    }`}>
+                                    {dayjs(date).date()}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </header>
 
