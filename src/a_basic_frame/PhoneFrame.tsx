@@ -15,82 +15,105 @@ const PhoneFrame: React.FC<PhoneFrameProps> = ({ children }) => {
     const [width, setWidth] = useState(430);
     const [height, setHeight] = useState(932);
     const [showShell, setShowShell] = useState(true);
-    const [scale, setScale] = useState(0.8); // 默认缩小一点以便在屏幕上完整显示
+    const [scale, setScale] = useState(0.8);
+    const [isCollapsed, setIsCollapsed] = useState(false);
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-neutral-950 p-4 gap-8">
-            {/* 控制面板 - 移至右侧并优化样式 */}
-            <div className="fixed top-1/2 -translate-y-1/2 right-6 z-[100] flex flex-col gap-6 p-5 bg-white/90 dark:bg-white/95 backdrop-blur-xl rounded-[2rem] border border-gray-200 shadow-2xl w-52">
-                <div className="flex flex-col gap-2.5 pb-5 border-b border-gray-100">
-                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-1">Presets</span>
-                    <div className="relative">
-                        <select
-                            className="w-full bg-gray-50 rounded-xl px-3 py-2.5 text-sm font-semibold text-gray-900 outline-none cursor-pointer appearance-none border border-gray-100 hover:bg-gray-100 transition-colors"
-                            onChange={(e) => {
-                                const preset = PRESETS.find(p => p.name === e.target.value);
-                                if (preset) {
-                                    setWidth(preset.width);
-                                    setHeight(preset.height);
-                                }
-                            }}
+        <div className="flex flex-col items-center justify-center min-h-screen bg-[#F8FAFC] dark:bg-neutral-950 p-4 gap-8 transition-colors duration-500">
+            {/* 控制面板 - 可折叠设计 */}
+            <div
+                className={`fixed right-8 z-[100] transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${isCollapsed
+                    ? 'top-8 w-14 h-14 rounded-full bg-[#0B121F] shadow-lg cursor-pointer flex items-center justify-center hover:scale-110 active:scale-95'
+                    : 'top-1/2 -translate-y-1/2 w-64 p-6 bg-white border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.05)] rounded-[2.5rem]'
+                    }`}
+                onClick={() => isCollapsed && setIsCollapsed(false)}
+            >
+                {isCollapsed ? (
+                    <span className="material-symbols-outlined text-white text-2xl animate-in zoom-in duration-500">settings</span>
+                ) : (
+                    <div className="flex flex-col gap-6">
+                        <div className="flex items-center justify-between px-1">
+                            <span className="text-[11px] font-bold text-[#0B121F]/40 uppercase tracking-[0.15em]">Device Preset</span>
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setIsCollapsed(true);
+                                }}
+                                className="w-8 h-8 rounded-full hover:bg-gray-50 flex items-center justify-center text-[#0B121F]/40 hover:text-[#0B121F] transition-colors"
+                            >
+                                <span className="material-symbols-outlined text-xl">close_fullscreen</span>
+                            </button>
+                        </div>
+
+                        <div className="relative group">
+                            <select
+                                className="w-full bg-[#F8FAFC] rounded-2xl px-4 py-3 text-sm font-semibold text-[#0B121F] outline-none cursor-pointer appearance-none border border-transparent hover:border-gray-200 transition-all"
+                                onChange={(e) => {
+                                    const preset = PRESETS.find(p => p.name === e.target.value);
+                                    if (preset) {
+                                        setWidth(preset.width);
+                                        setHeight(preset.height);
+                                    }
+                                }}
+                            >
+                                {PRESETS.map(p => (
+                                    <option key={p.name} value={p.name}>{p.name}</option>
+                                ))}
+                            </select>
+                            <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#0B121F]/30 group-hover:text-[#0B121F] transition-colors">expand_more</span>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3">
+                            <div className="flex flex-col gap-1.5">
+                                <span className="text-[10px] font-bold text-[#0B121F]/40 uppercase tracking-wider px-1">Width</span>
+                                <input
+                                    type="number"
+                                    value={width}
+                                    onChange={(e) => setWidth(Number(e.target.value))}
+                                    className="w-full bg-[#F8FAFC] rounded-xl px-3 py-2.5 text-xs font-bold text-[#0B121F] outline-none border border-transparent focus:border-gray-200"
+                                />
+                            </div>
+                            <div className="flex flex-col gap-1.5">
+                                <span className="text-[10px] font-bold text-[#0B121F]/40 uppercase tracking-wider px-1">Height</span>
+                                <input
+                                    type="number"
+                                    value={height}
+                                    onChange={(e) => setHeight(Number(e.target.value))}
+                                    className="w-full bg-[#F8FAFC] rounded-xl px-3 py-2.5 text-xs font-bold text-[#0B121F] outline-none border border-transparent focus:border-gray-200"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col gap-3">
+                            <div className="flex items-center justify-between px-1">
+                                <span className="text-[10px] font-bold text-[#0B121F]/40 uppercase tracking-wider">Scale</span>
+                                <span className="text-[10px] font-bold text-[#0B121F] bg-[#F8FAFC] px-2 py-1 rounded-lg">{Math.round(scale * 100)}%</span>
+                            </div>
+                            <input
+                                type="range"
+                                min="0.2"
+                                max="1.5"
+                                step="0.1"
+                                value={scale}
+                                onChange={(e) => setScale(Number(e.target.value))}
+                                className="w-full h-1 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-[#0B121F]"
+                            />
+                        </div>
+
+                        <button
+                            onClick={() => setShowShell(!showShell)}
+                            className={`w-full py-3.5 rounded-2xl text-[11px] font-bold uppercase tracking-widest transition-all duration-300 ${showShell
+                                ? 'bg-[#0B121F] text-white shadow-lg shadow-[#0B121F]/20'
+                                : 'bg-[#F8FAFC] text-[#0B121F] border border-gray-100 hover:bg-gray-100'
+                                }`}
                         >
-                            {PRESETS.map(p => (
-                                <option key={p.name} value={p.name} className="text-black bg-white">{p.name}</option>
-                            ))}
-                        </select>
-                        <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 text-sm">expand_more</span>
+                            {showShell ? 'Premium Shell' : 'Minimal Border'}
+                        </button>
                     </div>
-                </div>
-
-                <div className="flex flex-col gap-4 pb-5 border-b border-gray-100">
-                    <div className="flex items-center justify-between gap-3">
-                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Width</span>
-                        <input
-                            type="number"
-                            value={width}
-                            onChange={(e) => setWidth(Number(e.target.value))}
-                            className="w-24 bg-gray-50 rounded-lg px-2 py-2 text-xs font-bold text-center text-gray-900 outline-none focus:ring-2 ring-blue-500/20 border border-gray-100"
-                        />
-                    </div>
-                    <div className="flex items-center justify-between gap-3">
-                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Height</span>
-                        <input
-                            type="number"
-                            value={height}
-                            onChange={(e) => setHeight(Number(e.target.value))}
-                            className="w-24 bg-gray-50 rounded-lg px-2 py-2 text-xs font-bold text-center text-gray-900 outline-none focus:ring-2 ring-blue-500/20 border border-gray-100"
-                        />
-                    </div>
-                </div>
-
-                <div className="flex flex-col gap-3 pb-5 border-b border-gray-100">
-                    <div className="flex items-center justify-between px-1">
-                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Scale</span>
-                        <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{Math.round(scale * 100)}%</span>
-                    </div>
-                    <input
-                        type="range"
-                        min="0.2"
-                        max="1.5"
-                        step="0.1"
-                        value={scale}
-                        onChange={(e) => setScale(Number(e.target.value))}
-                        className="w-full h-1.5 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-blue-500"
-                    />
-                </div>
-
-                <button
-                    onClick={() => setShowShell(!showShell)}
-                    className={`w-full py-3 rounded-2xl text-[11px] font-bold uppercase tracking-widest transition-all duration-300 ${showShell
-                        ? 'bg-gray-900 text-white shadow-xl shadow-gray-900/20'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                        }`}
-                >
-                    {showShell ? 'Phone Shell' : 'Simple Border'}
-                </button>
+                )}
             </div>
 
-            {/* 手机容器 */}
+            {/* 手机容器 - 恢复正常显示 */}
             <div
                 style={{
                     width: `${width}px`,
@@ -99,34 +122,36 @@ const PhoneFrame: React.FC<PhoneFrameProps> = ({ children }) => {
                     transformOrigin: 'center center'
                 }}
                 className={`
-          relative flex flex-col overflow-hidden transition-all duration-300 ease-out
-          bg-white dark:bg-black shadow-[0_0_100px_-20px_rgba(0,0,0,0.3)]
-          ${showShell
-                        ? 'rounded-[3.5rem] border-[12px] border-gray-900 dark:border-gray-800 ring-4 ring-gray-800/20 dark:ring-white/5'
-                        : 'rounded-xl border border-gray-200 dark:border-white/10'
+                    relative flex flex-col overflow-hidden transition-all duration-500 ease-out
+                    bg-white dark:bg-black shadow-[0_30px_100px_rgba(0,0,0,0.12)]
+                    ${showShell
+                        ? 'rounded-[4rem] border-[14px] border-[#0B121F] dark:border-gray-900 ring-8 ring-[#0B121F]/5'
+                        : 'rounded-3xl border border-gray-200 dark:border-white/10'
                     }
-        `}
+                `}
             >
-                {/* 灵动岛 (仅在显示外壳时) */}
-                {showShell && (
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-gray-900 dark:bg-gray-800 rounded-b-3xl z-50 flex items-center justify-center">
-                        <div className="w-12 h-1 bg-white/10 rounded-full"></div>
+                <>
+                    {/* 灵动岛 (仅在显示外壳时) */}
+                    {showShell && (
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-36 h-8 bg-[#0B121F] dark:bg-gray-900 rounded-b-[2rem] z-50 flex items-center justify-center">
+                            <div className="w-14 h-1.5 bg-white/10 rounded-full"></div>
+                        </div>
+                    )}
+
+                    {/* 侧边按钮 (仅在显示外壳时) */}
+                    {showShell && (
+                        <>
+                            <div className="absolute left-[-16px] top-32 w-[4px] h-14 bg-[#0B121F] dark:bg-gray-800 rounded-l-lg"></div>
+                            <div className="absolute left-[-16px] top-52 w-[4px] h-20 bg-[#0B121F] dark:bg-gray-800 rounded-l-lg"></div>
+                            <div className="absolute left-[-16px] top-76 w-[4px] h-20 bg-[#0B121F] dark:bg-gray-800 rounded-l-lg"></div>
+                            <div className="absolute right-[-16px] top-44 w-[4px] h-28 bg-[#0B121F] dark:bg-gray-800 rounded-r-lg"></div>
+                        </>
+                    )}
+
+                    <div className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide relative bg-white">
+                        {children}
                     </div>
-                )}
-
-                {/* 侧边按钮 (仅在显示外壳时) */}
-                {showShell && (
-                    <>
-                        <div className="absolute left-[-14px] top-32 w-[3px] h-12 bg-gray-800 dark:bg-gray-700 rounded-l-md"></div>
-                        <div className="absolute left-[-14px] top-48 w-[3px] h-16 bg-gray-800 dark:bg-gray-700 rounded-l-md"></div>
-                        <div className="absolute left-[-14px] top-68 w-[3px] h-16 bg-gray-800 dark:bg-gray-700 rounded-l-md"></div>
-                        <div className="absolute right-[-14px] top-40 w-[3px] h-24 bg-gray-800 dark:bg-gray-700 rounded-r-md"></div>
-                    </>
-                )}
-
-                <div className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide relative">
-                    {children}
-                </div>
+                </>
             </div>
         </div>
     );
