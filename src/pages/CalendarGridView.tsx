@@ -1,24 +1,20 @@
 import React from 'react';
-import { useEvents } from '../contexts/useEvents';
+import { useCalendarGridStore } from '../stores/useCalendarGridStore';
 import { CalendarEngine } from '../calendar/engine';
-import { dayjs, formatDate } from '../calendar/utils';
+import { dayjs, formatDate, minutesToTime } from '../calendar/utils';
 
+/**
+ * UI (View) - CalendarGridView
+ * 服务员：只负责展示，不处理业务逻辑
+ */
 interface CalendarGridViewProps {
     activeDate: string;
+    onDateClick?: (date: string) => void;
 }
 
-const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate }) => {
-    const { events, deleteEvent } = useEvents();
-
-    const minutesToTime = (minutes: number): string => {
-        const h = Math.floor(minutes / 60);
-        const m = minutes % 60;
-        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-    };
-
-    const viewDate = dayjs(activeDate).toDate();
-    const range = CalendarEngine.getVisibleRange(viewDate, 'month');
-    const weeks = CalendarEngine.getWeeksInRange(range);
+const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate, onDateClick }) => {
+    // Store: 从厨师长获取准备好的数据
+    const { weeks, currentMonth, handleDeleteEvent, getEventsForDate } = useCalendarGridStore(activeDate);
 
     return (
         <main className="flex-1 p-0 pb-32 overflow-y-auto hide-scrollbar">
@@ -41,13 +37,17 @@ const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate }) => {
                                 </div>
                             </div>
                             {weekDays.map(date => {
-                                const dayEvents = CalendarEngine.filterEventsForDate(events, date);
+                                const dayEvents = getEventsForDate(date);
                                 const dateStr = formatDate(date);
                                 const isSelected = activeDate === dateStr;
-                                const isCurrentMonth = dayjs(date).isSame(viewDate, 'month');
+                                const isCurrentMonth = dayjs(date).isSame(currentMonth, 'month');
 
                                 return (
-                                    <div key={dateStr} className={`relative bg-white dark:bg-black min-h-[140px] p-3 flex flex-col group hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${isSelected ? 'ring-2 ring-inset ring-red-500 z-10' : ''} ${!isCurrentMonth ? 'opacity-40' : ''}`}>
+                                    <div
+                                        key={dateStr}
+                                        onClick={() => onDateClick?.(dateStr)}
+                                        className={`relative bg-white dark:bg-black min-h-[140px] p-3 flex flex-col group hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer ${isSelected ? 'ring-2 ring-inset ring-red-500 z-10' : ''} ${!isCurrentMonth ? 'opacity-40' : ''}`}
+                                    >
                                         <div className="flex justify-between items-start mb-2">
                                             <span className="text-[10px] font-semibold text-gray-400 uppercase">
                                                 {dayjs(date).format('ddd')}
@@ -62,7 +62,7 @@ const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate }) => {
                                                     <button
                                                         onClick={(e) => {
                                                             e.stopPropagation();
-                                                            deleteEvent(event.id);
+                                                            handleDeleteEvent(event.id);
                                                         }}
                                                         className="absolute top-0 right-0 size-3 flex items-center justify-center rounded-full bg-red-500 text-white opacity-0 group-hover/event:opacity-100 transition-opacity"
                                                     >

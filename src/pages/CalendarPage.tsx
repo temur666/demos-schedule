@@ -128,7 +128,12 @@ const CalendarPage: React.FC = () => {
                 {(() => {
                     switch (view) {
                         case 'grid':
-                            return <CalendarGridView activeDate={activeDate} />;
+                            return (
+                                <CalendarGridView
+                                    activeDate={activeDate}
+                                    onDateClick={(date) => handleCreateFromBlank(date, 540)}
+                                />
+                            );
                         case 'agenda':
                             return <CalendarAgendaView activeDate={activeDate} />;
                         case 'schedule':
