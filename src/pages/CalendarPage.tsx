@@ -2,13 +2,24 @@ import React, { useState, useEffect } from 'react';
 import CalendarGridView from './CalendarGridView';
 import CalendarAgendaView from './CalendarAgendaView';
 import CalendarDayView from './CalendarDayView';
+import { AddEventModal } from '../components/AddEventModal';
+import type { CreateEventInput } from '../types/event';
+import { useEvents } from '../contexts/EventContext';
 
 type ViewType = 'grid' | 'agenda' | 'schedule';
 
 const CalendarPage: React.FC = () => {
     const [view, setView] = useState<ViewType>('schedule');
     const [isDarkMode, setIsDarkMode] = useState(false);
-    const [activeDate, setActiveDate] = useState(3);
+    const [activeDate, setActiveDate] = useState(new Date().toISOString().split('T')[0]);
+    const { addEvent } = useEvents();
+
+    const handleAddEvent = (input: CreateEventInput) => {
+        addEvent({
+            ...input,
+            date: activeDate // Use the currently selected date
+        });
+    };
 
     // Touch handling state
     const [touchStart, setTouchStart] = useState<{ x: number, y: number } | null>(null);
@@ -85,13 +96,13 @@ const CalendarPage: React.FC = () => {
                 {(() => {
                     switch (view) {
                         case 'grid':
-                            return <CalendarGridView />;
+                            return <CalendarGridView activeDate={activeDate} />;
                         case 'agenda':
-                            return <CalendarAgendaView />;
+                            return <CalendarAgendaView activeDate={activeDate} />;
                         case 'schedule':
-                            return <CalendarDayView />;
+                            return <CalendarDayView activeDate={activeDate} />;
                         default:
-                            return <CalendarAgendaView />;
+                            return <CalendarAgendaView activeDate={activeDate} />;
                     }
                 })()}
             </div>
@@ -143,13 +154,13 @@ const CalendarPage: React.FC = () => {
                 {/* Week Day Selector */}
                 <div className="mt-3 flex justify-between items-center px-1 overflow-x-auto hide-scrollbar pb-1">
                     {[
-                        { day: 'S', date: 1 },
-                        { day: 'M', date: 2 },
-                        { day: 'W', date: 3 },
-                        { day: 'T', date: 4 },
-                        { day: 'F', date: 5 },
-                        { day: 'S', date: 6 },
-                        { day: 'S', date: 7 },
+                        { day: 'S', date: '2023-10-01' },
+                        { day: 'M', date: '2023-10-02' },
+                        { day: 'W', date: '2023-10-03' },
+                        { day: 'T', date: '2023-10-04' },
+                        { day: 'F', date: '2023-10-05' },
+                        { day: 'S', date: '2023-10-06' },
+                        { day: 'S', date: '2023-10-07' },
                     ].map((item, i) => (
                         <div
                             key={i}
@@ -161,7 +172,7 @@ const CalendarPage: React.FC = () => {
                                 ? 'bg-red-500 font-semibold text-white shadow-md'
                                 : 'font-medium text-gray-900 dark:text-white'
                                 }`}>
-                                {item.date}
+                                {item.date.split('-')[2]}
                             </div>
                         </div>
                     ))}
@@ -216,13 +227,10 @@ const CalendarPage: React.FC = () => {
                     </button>
                 </div>
 
-                <button className="size-12 rounded-full bg-black dark:bg-white text-white dark:text-black shadow-xl flex items-center justify-center hover:scale-105 transition-transform hover:rotate-90 duration-300 active:scale-95">
-                    <span className="material-symbols-outlined text-[28px]">add</span>
-                </button>
+                <AddEventModal onAddEvent={handleAddEvent} />
             </div>
         </div>
     );
 };
 
 export default CalendarPage;
-
