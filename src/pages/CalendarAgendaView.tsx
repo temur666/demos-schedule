@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useCallback } from 'react';
 import { useCalendarAgendaStore } from '../stores/useCalendarAgendaStore';
 import { dayjs, minutesToTime, formatDate } from '../calendar/utils';
-import { motion } from 'framer-motion';
 
 interface CalendarAgendaViewProps {
     activeDate: string;
@@ -63,11 +62,9 @@ const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({ activeDate, onA
     };
 
     return (
-        <motion.main
+        <main
             ref={containerRef}
             onScroll={handleScroll}
-            layoutId="calendar-view-container"
-            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
             className="flex-1 p-0 pb-32 overflow-y-auto hide-scrollbar"
         >
             {days.map(date => {
@@ -138,7 +135,7 @@ const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({ activeDate, onA
                     </div>
                 );
             })}
-        </motion.main>
+        </main>
     );
 };
 

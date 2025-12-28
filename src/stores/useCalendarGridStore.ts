@@ -1,8 +1,14 @@
 import { useMemo, useState, useEffect, useCallback } from 'react';
 import { useEvents } from '../contexts/useEvents';
 import { CalendarEngine } from '../calendar/engine';
-import { dayjs, formatDate } from '../calendar/utils';
+import { dayjs } from '../calendar/utils';
 import { useSettings } from '../contexts/SettingsContext';
+
+export interface MonthGroup {
+    monthKey: string;      // 2025-01
+    monthDate: Date;       // 用于计算，不用于显示
+    weeks: Date[][];
+}
 
 export const useCalendarGridStore = (activeDate: string) => {
     const { events, deleteEvent } = useEvents();
@@ -21,20 +27,18 @@ export const useCalendarGridStore = (activeDate: string) => {
         }
     }, [activeDate]);
 
-    const weeks = useMemo(() => {
-        const allWeeks: Date[][] = [];
-        const seenWeeks = new Set<string>();
-        months.forEach(month => {
+    // 直接输出 MonthGroup 结构，而不是 weeks
+    const monthGroups = useMemo<MonthGroup[]>(() => {
+        return months.map(month => {
             const range = CalendarEngine.getVisibleRange(month, 'month');
-            CalendarEngine.getWeeksInRange(range).forEach(week => {
-                const key = formatDate(week[0]);
-                if (!seenWeeks.has(key)) {
-                    allWeeks.push(week);
-                    seenWeeks.add(key);
-                }
-            });
+            const weeks = CalendarEngine.getWeeksInRange(range);
+            
+            return {
+                monthKey: dayjs(month).format('YYYY-MM'),
+                monthDate: month,
+                weeks,
+            };
         });
-        return allWeeks.sort((a, b) => a[0].getTime() - b[0].getTime());
     }, [months, weekStart]);
 
     const loadMore = useCallback((direction: 'up' | 'down') => {
@@ -45,7 +49,7 @@ export const useCalendarGridStore = (activeDate: string) => {
     }, []);
 
     return {
-        weeks,
+        monthGroups,
         loadMore,
         handleDeleteEvent: deleteEvent,
         getEventsForDate: (date: Date) => CalendarEngine.filterEventsForDate(events, date),

@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useCallback } from 'react';
 import { minutesToTime, formatDate, dayjs } from '../calendar/utils';
 import { useCalendarDayStore } from '../stores/useCalendarDayStore';
-import { motion } from 'framer-motion';
 
 interface CalendarDayViewProps {
     activeDate: string;
@@ -68,11 +67,9 @@ const CalendarDayView: React.FC<CalendarDayViewProps> = ({ activeDate, onBlankLo
     const calculateHeight = (start: number, end: number) => Math.max(end - start, 40);
 
     return (
-        <motion.div
+        <div
             ref={containerRef}
             onScroll={handleScroll}
-            layoutId="calendar-view-container"
-            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
             className="flex-1 overflow-y-auto hide-scrollbar bg-white dark:bg-black"
         >
             <div className="flex flex-col pb-32">
@@ -178,7 +175,7 @@ const CalendarDayView: React.FC<CalendarDayViewProps> = ({ activeDate, onBlankLo
                     );
                 })}
             </div>
-        </motion.div>
+        </div>
     );
 };
 
