@@ -34,14 +34,25 @@ const CalendarDayView: React.FC<CalendarDayViewProps> = ({
     }, [days]);
 
     // 初始滚动到 activeDate 的当前时间或顶部
+    // 初始滚动到 activeDate 的当前时间或顶部
     useEffect(() => {
-        if (containerRef.current) {
-            const activeEl = containerRef.current.querySelector(`[data-date="${activeDate}"]`);
-            if (activeEl) {
-                activeEl.scrollIntoView({ behavior: 'auto', block: 'start' });
+        if (!containerRef.current) return;
+        const targetEl = containerRef.current.querySelector(`[data-date="${activeDate}"]`);
+        if (targetEl) {
+            const container = containerRef.current;
+            const targetRect = targetEl.getBoundingClientRect();
+            const containerRect = container.getBoundingClientRect();
+            const targetCenter = targetRect.top + targetRect.height / 2;
+            const containerCenter = containerRect.top + containerRect.height / 2;
+
+            if (Math.abs(targetCenter - containerCenter) > 50) {
+                container.scrollTo({
+                    top: container.scrollTop + (targetCenter - containerCenter),
+                    behavior: 'smooth'
+                });
             }
         }
-    }, [activeDate]);
+    }, [activeDate, days]);
 
     const handleScroll = useCallback(() => {
         if (!containerRef.current) return;
