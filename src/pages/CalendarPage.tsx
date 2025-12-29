@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import CalendarGridView from './CalendarGridView';
 import CalendarAgendaView from './CalendarAgendaView';
-import CalendarDayView from './CalendarDayView';
+import CalendarDayView from './CalenderDayView';
 import { CalendarBottomBar } from '../components/CalendarBottomBar';
 import { CalendarTopBar } from '../components/CalendarTopBar';
 import DateWidget from '../components/DateWidget/DateWidget';
