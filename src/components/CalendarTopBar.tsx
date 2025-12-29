@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SettingsModal } from './SettingsModal';
+import { useSearchStore } from '../stores/useSearchStore';
 
 export const CalendarTopBar: React.FC = () => {
-    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const { isSearchOpen, searchQuery, setSearchQuery, openSearch, closeSearch } = useSearchStore();
 
     return (
         <>
@@ -15,7 +16,7 @@ export const CalendarTopBar: React.FC = () => {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            onClick={() => setIsSearchOpen(false)}
+                            onClick={closeSearch}
                             className="fixed inset-0 z-[70] bg-black/40 backdrop-blur-sm"
                         />
                         {/* 顶部下滑搜索框 */}
@@ -30,12 +31,14 @@ export const CalendarTopBar: React.FC = () => {
                                 <span className="material-symbols-outlined text-gray-500 mr-2">search</span>
                                 <input
                                     autoFocus
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
                                     placeholder="搜索日程、活动..."
                                     className="flex-1 bg-transparent border-none outline-none text-sm text-gray-900 dark:text-white"
                                 />
                             </div>
                             <button
-                                onClick={() => setIsSearchOpen(false)}
+                                onClick={closeSearch}
                                 className="text-blue-600 dark:text-blue-400 font-medium text-sm px-2 active:opacity-70 transition-opacity"
                             >
                                 取消
@@ -47,7 +50,7 @@ export const CalendarTopBar: React.FC = () => {
 
             <div className="fixed top-[9px] right-4 z-[60] flex items-center h-11 px-1.5 rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/20 dark:border-white/10">
                 <button
-                    onClick={() => setIsSearchOpen(true)}
+                    onClick={openSearch}
                     className="h-8 w-10 flex items-center justify-center rounded-full text-gray-900 dark:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-all active:scale-95"
                 >
                     <span className="material-symbols-outlined text-[22px]">search</span>
