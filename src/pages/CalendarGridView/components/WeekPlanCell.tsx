@@ -35,7 +35,7 @@ const WeekPlanCell: React.FC<WeekPlanCellProps> = ({ weekNum, weekDays, events, 
             onMouseLeave={handleTouchEnd}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
-            className="col-span-2 relative bg-gray-100 dark:bg-white/5 min-h-[160px] p-2 flex flex-col group hover:bg-gray-200 dark:hover:bg-white/10 transition-colors cursor-pointer"
+            className="col-span-2 relative bg-gray-100 dark:bg-white/5 min-h-[160px] p-2 flex flex-col group hover:bg-gray-200 dark:hover:bg-white/20 transition-colors cursor-pointer"
         >
             <div className="flex justify-between items-start mb-2">
                 <div className="flex flex-col">
