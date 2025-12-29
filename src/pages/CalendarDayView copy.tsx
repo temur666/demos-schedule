@@ -66,75 +66,6 @@ const CalendarDayView: React.FC<CalendarDayViewProps> = ({ activeDate, onBlankLo
     const calculatePosition = (minutes: number) => minutes;
     const calculateHeight = (start: number, end: number) => Math.max(end - start, 40);
 
-    // 检查两个事项是否在时间上重叠
-    const isOverlapping = (e1: any, e2: any) => {
-        return e1.startTime < e2.endTime && e2.startTime < e1.endTime;
-    };
-
-    // 为重叠事项分配布局
-    const assignLayoutToEvents = (events: any[]) => {
-        if (events.length === 0) return [];
-        const sortedEvents = [...events].sort((a, b) => {
-            if (a.startTime !== b.startTime) return a.startTime - b.startTime;
-            return a.id.localeCompare(b.id);
-        });
-
-        const layers: any[][] = [];
-        const eventsWithLayout = sortedEvents.map(event => ({
-            ...event,
-            column: 0,
-            totalColumns: 1
-        }));
-
-        for (const event of eventsWithLayout) {
-            let assignedLayer = -1;
-            for (let i = 0; i < layers.length; i++) {
-                if (!layers[i].some(le => isOverlapping(event, le))) {
-                    assignedLayer = i;
-                    break;
-                }
-            }
-            if (assignedLayer === -1) {
-                assignedLayer = layers.length;
-                layers.push([]);
-            }
-            layers[assignedLayer].push(event);
-            (event as any).column = assignedLayer;
-        }
-
-        const maxLayers = layers.length;
-        eventsWithLayout.forEach(event => {
-            (event as any).totalColumns = maxLayers;
-        });
-
-        return eventsWithLayout;
-    };
-
-    const getTextColor = (bgColor: string) => {
-        if (!bgColor) return 'text-gray-900 dark:text-white';
-        if (bgColor.startsWith('#')) {
-            const r = parseInt(bgColor.slice(1, 3), 16);
-            const g = parseInt(bgColor.slice(3, 5), 16);
-            const b = parseInt(bgColor.slice(5, 7), 16);
-            const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-            return brightness < 128 ? 'text-white/90' : 'text-black/90';
-        }
-        return 'text-gray-900 dark:text-white';
-    };
-
-    const formatTimeRange = (event: any) => {
-        const start = event.isSegment && !event.isFirstSegment ? event.originalStartTime : event.startTime;
-        const end = event.isSegment && !event.isLastSegment ? event.originalEndTime : event.endTime;
-
-        const formatTime = (mins: number) => {
-            if (mins === 1440) return "24:00";
-            if (mins > 1440) return `${minutesToTime(mins - 1440)}+1`;
-            return minutesToTime(mins);
-        };
-
-        return `${formatTime(start)} - ${formatTime(end)}`;
-    };
-
     return (
         <div
             ref={containerRef}
@@ -207,24 +138,19 @@ const CalendarDayView: React.FC<CalendarDayViewProps> = ({ activeDate, onBlankLo
 
                                 {/* Real Events Overlay */}
                                 <div className="absolute top-0 left-16 right-0 bottom-0 pointer-events-none">
-                                    {assignLayoutToEvents(dayEvents).map((event: any) => {
+                                    {dayEvents.map(event => {
                                         const top = calculatePosition(event.startTime);
                                         const height = calculateHeight(event.startTime, event.endTime);
-                                        const width = 100 / (event.totalColumns || 1);
-                                        const left = (event.column || 0) * width;
-                                        const textColor = getTextColor(event.color);
-
                                         return (
                                             <div
                                                 key={event.id}
-                                                className={`absolute rounded-xl p-2 cursor-pointer hover:brightness-95 transition-all shadow-sm pointer-events-auto overflow-hidden group/event border border-white/10 ${textColor}`}
+                                                className="absolute left-1 right-2 rounded-md p-2 cursor-pointer hover:brightness-95 transition-all shadow-sm pointer-events-auto overflow-hidden group/event"
                                                 style={{
                                                     top: `${top}px`,
                                                     height: `${height}px`,
-                                                    left: `${left}%`,
-                                                    width: `calc(${width}% - 4px)`,
-                                                    backgroundColor: event.color,
-                                                    zIndex: 10 + (event.column || 0)
+                                                    backgroundColor: `${event.color}20`,
+                                                    borderLeft: `3px solid ${event.color}`,
+                                                    color: event.color
                                                 }}
                                             >
                                                 <div className="flex flex-col h-full relative">
@@ -233,22 +159,14 @@ const CalendarDayView: React.FC<CalendarDayViewProps> = ({ activeDate, onBlankLo
                                                             e.stopPropagation();
                                                             handleDeleteEvent(event.id);
                                                         }}
-                                                        className="absolute top-0 right-0 size-6 flex items-center justify-center rounded-full bg-black/10 opacity-0 group-hover/event:opacity-100 transition-opacity hover:bg-red-500 hover:text-white"
+                                                        className="absolute top-0 right-0 size-6 flex items-center justify-center rounded-full bg-white/50 dark:bg-black/50 opacity-0 group-hover/event:opacity-100 transition-opacity hover:bg-red-500 hover:text-white"
                                                     >
                                                         <span className="material-symbols-outlined text-[14px]">close</span>
                                                     </button>
-                                                    <span className="text-xs font-bold leading-tight truncate pr-6">{event.title}</span>
-                                                    <span className="text-[10px] opacity-70 mt-auto font-medium">
-                                                        {formatTimeRange(event)}
+                                                    <span className="text-xs font-semibold leading-tight truncate pr-6">{event.title}</span>
+                                                    <span className="text-[10px] opacity-80 mt-auto">
+                                                        {minutesToTime(event.startTime)} - {minutesToTime(event.endTime)}
                                                     </span>
-
-                                                    {/* Segment Indicators */}
-                                                    {event.isSegment && !event.isLastSegment && (
-                                                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-1 bg-white/40 rounded-full" style={{ width: '24px' }} />
-                                                    )}
-                                                    {event.isSegment && !event.isFirstSegment && (
-                                                        <div className="absolute top-0 left-1/2 -translate-x-1/2 h-1 bg-white/40 rounded-full" style={{ width: '24px' }} />
-                                                    )}
                                                 </div>
                                             </div>
                                         );
