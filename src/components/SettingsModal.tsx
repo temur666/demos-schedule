@@ -9,7 +9,7 @@ export function SettingsModal() {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <button className="size-11 rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/20 dark:border-white/10 flex items-center justify-center text-gray-900 dark:text-white hover:scale-105 transition-all active:scale-95">
+                <button className="h-8 w-10 flex items-center justify-center rounded-full text-gray-900 dark:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-all active:scale-95">
                     <span className="material-symbols-outlined text-[22px]">settings</span>
                 </button>
             </DialogTrigger>
