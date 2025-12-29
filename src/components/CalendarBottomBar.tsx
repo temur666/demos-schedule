@@ -6,8 +6,6 @@ import type { CreateEventInput } from '../types/event';
 interface CalendarBottomBarProps {
     view: ViewType;
     setView: (view: ViewType) => void;
-    isDarkMode: boolean;
-    toggleDarkMode: () => void;
     isModalOpen: boolean;
     setIsModalOpen: (open: boolean) => void;
     initialModalData: { startTime?: string, date?: string, isWeekPlan?: boolean };
@@ -17,8 +15,6 @@ interface CalendarBottomBarProps {
 export const CalendarBottomBar: React.FC<CalendarBottomBarProps> = ({
     view,
     setView,
-    isDarkMode,
-    toggleDarkMode,
     isModalOpen,
     setIsModalOpen,
     initialModalData,
@@ -26,14 +22,6 @@ export const CalendarBottomBar: React.FC<CalendarBottomBarProps> = ({
 }) => {
     return (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-4">
-            <div className="flex items-center gap-2">
-                <button
-                    onClick={toggleDarkMode}
-                    className="size-12 rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/20 dark:border-white/10 flex items-center justify-center text-gray-900 dark:text-white hover:scale-105 transition-all active:scale-95"
-                >
-                    <span className="material-symbols-outlined text-[24px]">{isDarkMode ? 'dark_mode' : 'light_mode'}</span>
-                </button>
-            </div>
 
             <div className="relative flex h-12 items-center gap-1 rounded-full bg-white/80 dark:bg-black/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/20 dark:border-white/10 px-2">
                 {/* Sliding Background Indicator */}

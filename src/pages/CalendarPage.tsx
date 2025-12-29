@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import CalendarGridView from './CalendarGridView';
 import CalendarAgendaView from './CalendarAgendaView';
 import CalendarDayView from './CalenderDayView';
@@ -16,7 +16,6 @@ const CalendarPage: React.FC = () => {
     const {
         view, setView,
         activeDate, setActiveDate,
-        isDarkMode, toggleDarkMode,
         isModalOpen, setIsModalOpen,
         initialModalData, setInitialModalData
     } = useCalendarPageStore();
@@ -59,14 +58,6 @@ const CalendarPage: React.FC = () => {
         confirmCreate(input);
     };
 
-    // Toggle dark mode by adding/removing 'dark' class on the document element
-    useEffect(() => {
-        if (isDarkMode) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    }, [isDarkMode]);
 
 
 
@@ -131,8 +122,6 @@ const CalendarPage: React.FC = () => {
             <CalendarBottomBar
                 view={view}
                 setView={setView}
-                isDarkMode={isDarkMode}
-                toggleDarkMode={toggleDarkMode}
                 isModalOpen={isModalOpen}
                 setIsModalOpen={setIsModalOpen}
                 initialModalData={initialModalData}

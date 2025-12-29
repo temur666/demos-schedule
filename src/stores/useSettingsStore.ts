@@ -5,10 +5,12 @@ import { useSettings } from '../contexts/SettingsContext';
  * Now uses Context for reactive updates without page reload
  */
 export const useSettingsStore = () => {
-    const { weekStart, toggleWeekStart } = useSettings();
+    const { weekStart, toggleWeekStart, isDarkMode, toggleDarkMode } = useSettings();
 
     return {
         weekStart,
         toggleWeekStart,
+        isDarkMode,
+        toggleDarkMode,
     };
 };

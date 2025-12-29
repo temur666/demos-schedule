@@ -4,7 +4,7 @@ import { Button } from './ui/button';
 import { useSettingsStore } from '../stores/useSettingsStore';
 
 export function SettingsModal() {
-    const { weekStart, toggleWeekStart } = useSettingsStore();
+    const { weekStart, toggleWeekStart, isDarkMode, toggleDarkMode } = useSettingsStore();
 
     return (
         <Dialog>
@@ -18,6 +18,28 @@ export function SettingsModal() {
                     <DialogTitle>设置</DialogTitle>
                 </DialogHeader>
                 <div className="py-6 space-y-6">
+                    <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">外观模式：</span>
+                        <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-lg">
+                            <Button
+                                variant={!isDarkMode ? 'default' : 'ghost'}
+                                size="sm"
+                                onClick={() => isDarkMode && toggleDarkMode()}
+                                className="rounded-md px-4 h-8 text-xs"
+                            >
+                                浅色
+                            </Button>
+                            <Button
+                                variant={isDarkMode ? 'default' : 'ghost'}
+                                size="sm"
+                                onClick={() => !isDarkMode && toggleDarkMode()}
+                                className="rounded-md px-4 h-8 text-xs"
+                            >
+                                深色
+                            </Button>
+                        </div>
+                    </div>
+
                     <div className="flex items-center justify-between">
                         <span className="text-sm font-medium text-gray-700 dark:text-gray-300">一周开头：</span>
                         <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-lg">
