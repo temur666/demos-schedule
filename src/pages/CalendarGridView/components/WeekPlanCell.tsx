@@ -1,8 +1,8 @@
 import React from 'react';
-import { formatDate, minutesToTime } from '../../../calendar/utils';
+import { formatDate } from '../../../calendar/utils';
 import type { CalendarEvent } from '../../../types/event';
-
 import { useGridUIStore } from '../stores/useGridUIStore';
+import EventItem from './EventItem';
 
 interface WeekPlanCellProps {
     weekNum: number;
@@ -38,7 +38,7 @@ const WeekPlanCell: React.FC<WeekPlanCellProps> = ({ weekNum, weekDays, events, 
             onMouseLeave={handleTouchEnd}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
-            className="col-span-2 relative bg-gray-100 dark:bg-white/5 p-2 flex flex-col group hover:bg-gray-200 dark:hover:bg-white/20 transition-colors cursor-pointer"
+            className="col-span-2 relative bg-surface-secondary dark:bg-white/5 p-2 flex flex-col group hover:bg-surface-tertiary dark:hover:bg-white/20 transition-colors cursor-pointer"
             style={{ minHeight: `${rowHeight}px` }}
         >
             <div className="flex justify-between items-start mb-2">
@@ -46,7 +46,7 @@ const WeekPlanCell: React.FC<WeekPlanCellProps> = ({ weekNum, weekDays, events, 
                     <span className="text-xl font-medium text-gray-900 dark:text-white font-display tracking-tight">
                         {weekNum} 周
                     </span>
-                    <span className="text-[10px] text-gray-400 uppercase tracking-wider">
+                    <span className="text-label-sm text-gray-400 uppercase tracking-wider">
                         周计划
                     </span>
                 </div>
@@ -54,19 +54,11 @@ const WeekPlanCell: React.FC<WeekPlanCellProps> = ({ weekNum, weekDays, events, 
 
             <div className="flex flex-col gap-1 mt-1">
                 {events.map(event => (
-                    <div key={event.id} className="w-full pl-2 py-0.5 border-l-2 relative group/event" style={{ borderColor: event.color }}>
-                        <span className="text-[9px] font-medium text-gray-900 dark:text-white truncate block pr-3">{event.title}</span>
-                        <span className="text-[8px] text-gray-400 block">{minutesToTime(event.startTime)}</span>
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onDeleteEvent(event.id);
-                            }}
-                            className="absolute top-0 right-0 size-3 flex items-center justify-center rounded-full bg-red-500 text-white opacity-0 group-hover/event:opacity-100 transition-opacity"
-                        >
-                            <span className="material-symbols-outlined text-[8px]">close</span>
-                        </button>
-                    </div>
+                    <EventItem
+                        key={event.id}
+                        event={event}
+                        onDeleteEvent={onDeleteEvent}
+                    />
                 ))}
             </div>
         </div>
