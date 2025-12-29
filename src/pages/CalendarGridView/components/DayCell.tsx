@@ -1,6 +1,8 @@
 import React from 'react';
 import { dayjs, formatDate, minutesToTime } from '../../../calendar/utils';
 
+import { useGridUIStore } from '../stores/useGridUIStore';
+
 const WEEK_DAYS = ['日', '一', '二', '三', '四', '五', '六'];
 
 interface DayCellProps {
@@ -12,12 +14,14 @@ interface DayCellProps {
 
 const DayCell: React.FC<DayCellProps> = ({ date, events, onDateClick, onDeleteEvent }) => {
     const dateStr = formatDate(date);
+    const { rowHeight } = useGridUIStore();
 
     return (
         <div
             data-date={dateStr}
             onDoubleClick={() => onDateClick?.(dateStr)}
-            className="relative bg-white dark:bg-black min-h-[160px] p-2 flex flex-col group hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
+            className="relative bg-white dark:bg-black p-2 flex flex-col group hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
+            style={{ minHeight: `${rowHeight}px` }}
         >
             <div className="flex justify-between items-center mb-2">
                 <span className="text-[12px] font-medium text-gray-400 uppercase">
