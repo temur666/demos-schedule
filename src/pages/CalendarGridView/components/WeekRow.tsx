@@ -17,7 +17,7 @@ const WeekRow: React.FC<WeekRowProps> = ({ weekDays, children, weekEvents, onWee
 
     return (
         <div className="mb-0">
-            <div className="grid grid-cols-3 gap-px bg-gray-200 dark:bg-white/20 border-b border-gray-200 dark:border-white/20">
+            <div className="grid grid-cols-3 gap-px bg-border-default dark:bg-white/20 border-b border-border-default dark:border-white/20">
                 <WeekPlanCell
                     weekNum={weekNum}
                     weekDays={weekDays}
