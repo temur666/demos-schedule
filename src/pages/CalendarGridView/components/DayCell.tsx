@@ -1,6 +1,8 @@
 import React from 'react';
 import { dayjs, formatDate, minutesToTime } from '../../../calendar/utils';
 
+const WEEK_DAYS = ['日', '一', '二', '三', '四', '五', '六'];
+
 interface DayCellProps {
     date: any;
     events: any[];
@@ -18,8 +20,8 @@ const DayCell: React.FC<DayCellProps> = ({ date, events, onDateClick, onDeleteEv
             className="relative bg-white dark:bg-black min-h-[160px] p-2 flex flex-col group hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
         >
             <div className="flex justify-between items-center mb-2">
-                <span className="text-[10px] font-semibold text-gray-400 uppercase">
-                    {dayjs(date).format('ddd')}
+                <span className="text-[12px] font-semibold text-gray-400 uppercase">
+                    {WEEK_DAYS[dayjs(date).day()]}
                 </span>
                 <span className="text-xl font-black font-serif text-gray-900 dark:text-white">
                     {dayjs(date).date()}
