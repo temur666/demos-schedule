@@ -66,10 +66,10 @@ const TimelineModeView: React.FC<TimelineModeViewProps> = ({ events }) => {
                     <div key={rowIndex} className="flex flex-col border-t border-gray-100 dark:border-white/10">
                         <div className="flex justify-between px-4 py-1.5 bg-gray-50/50 dark:bg-white/5">
                             <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
-                                {minutesToTime(startMins)}
+                                {Math.floor(startMins / 60)}
                             </span>
                             <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
-                                {minutesToTime(endMins)}
+                                {Math.floor(endMins / 60)}
                             </span>
                         </div>
                         <div className="px-4">
