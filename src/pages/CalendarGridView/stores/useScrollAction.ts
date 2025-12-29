@@ -9,6 +9,8 @@ export const useScrollAction = (
 ) => {
     const lastScrollTop = useRef(0);
     const prevHeight = useRef(0);
+    const isScrolling = useRef(false);
+    const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
         if (containerRef.current && prevHeight.current > 0) {
@@ -20,19 +22,20 @@ export const useScrollAction = (
         prevHeight.current = containerRef.current?.scrollHeight || 0;
     }, [monthGroups]);
 
+    // Scroll to activeDate when it changes (and we are not scrolling)
     useEffect(() => {
-        if (!containerRef.current) return;
-        const targetEl = containerRef.current.querySelector(`[data-date="${activeDate}"]`);
-        if (targetEl) {
-            const container = containerRef.current;
-            const targetRect = targetEl.getBoundingClientRect();
-            const containerRect = container.getBoundingClientRect();
-            const targetCenter = targetRect.top + targetRect.height / 2;
-            const containerCenter = containerRect.top + containerRect.height / 2;
+        if (!isScrolling.current && containerRef.current) {
+            const el = containerRef.current.querySelector(`[data-date="${activeDate}"]`) as HTMLElement;
+            if (el) {
+                const container = containerRef.current;
+                const elementTop = el.offsetTop;
+                const elementHeight = el.offsetHeight;
+                const containerHeight = container.clientHeight;
 
-            if (Math.abs(targetCenter - containerCenter) > 50) {
+                const targetScrollTop = elementTop - (containerHeight / 2) + (elementHeight / 2);
+
                 container.scrollTo({
-                    top: container.scrollTop + (targetCenter - containerCenter),
+                    top: targetScrollTop,
                     behavior: 'smooth'
                 });
             }
@@ -41,6 +44,13 @@ export const useScrollAction = (
 
     const handleScroll = useCallback(() => {
         if (!containerRef.current) return;
+
+        isScrolling.current = true;
+        if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+        scrollTimeout.current = setTimeout(() => {
+            isScrolling.current = false;
+        }, 150);
+
         const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
         if (scrollTop + clientHeight > scrollHeight - 600) {
             loadMore('down');
