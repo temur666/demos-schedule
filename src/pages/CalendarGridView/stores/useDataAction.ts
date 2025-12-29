@@ -40,5 +40,11 @@ export const useDataAction = (activeDate: string) => {
             : [dayjs(prev[0]).subtract(1, 'month').toDate(), ...prev]);
     }, []);
 
-    return { monthGroups, loadMore, deleteEvent, getEventsForDate: (date: Date) => CalendarEngine.filterEventsForDate(events, date) };
+    return {
+        monthGroups,
+        loadMore,
+        deleteEvent,
+        getEventsForDate: (date: Date) => CalendarEngine.filterEventsForDate(events, date),
+        getWeekPlanEvents: (weekDays: Date[]) => CalendarEngine.filterWeekPlanEvents(events, weekDays)
+    };
 };

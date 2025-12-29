@@ -10,7 +10,7 @@ interface CalendarBottomBarProps {
     toggleDarkMode: () => void;
     isModalOpen: boolean;
     setIsModalOpen: (open: boolean) => void;
-    initialModalData: { startTime?: string, date?: string };
+    initialModalData: { startTime?: string, date?: string, isWeekPlan?: boolean };
     onAddEvent: (input: CreateEventInput) => void;
 }
 

@@ -10,7 +10,7 @@ interface AddEventModalProps {
     onAddEvent: (event: CreateEventInput) => void;
     isOpen?: boolean;
     onOpenChange?: (open: boolean) => void;
-    initialData?: { startTime?: string, date?: string };
+    initialData?: { startTime?: string, date?: string, isWeekPlan?: boolean };
 }
 
 const eventColors = [
@@ -62,7 +62,8 @@ export function AddEventModal({ onAddEvent, isOpen: controlledOpen, onOpenChange
             startTime: timeToMinutes(startTime),
             endTime: timeToMinutes(endTime),
             color: selectedColor,
-            date: initialData?.date || formatDate(new Date())
+            date: initialData?.date || formatDate(new Date()),
+            isWeekPlan: initialData?.isWeekPlan
         });
 
         // Reset form

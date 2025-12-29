@@ -46,6 +46,15 @@ const CalendarPage: React.FC = () => {
         setIsModalOpen(true);
     };
 
+    const handleCreateWeekPlan = (date: string) => {
+        setInitialModalData({
+            date,
+            startTime: '09:00',
+            isWeekPlan: true
+        });
+        setIsModalOpen(true);
+    };
+
     const handleAddEvent = (input: CreateEventInput) => {
         confirmCreate(input);
     };
@@ -81,6 +90,7 @@ const CalendarPage: React.FC = () => {
                                         setActiveDate(date);
                                         setView('schedule');
                                     }}
+                                    onWeekLongPress={handleCreateWeekPlan}
                                     onActiveDateChange={setActiveDate}
                                 />
                             );

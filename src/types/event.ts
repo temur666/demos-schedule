@@ -6,6 +6,7 @@ export interface CalendarEvent {
     color: string;
     date: string;      // Format: "YYYY-MM-DD"
     description?: string;
+    isWeekPlan?: boolean;
     createdAt: number;
 }
 

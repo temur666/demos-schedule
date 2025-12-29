@@ -8,11 +8,12 @@ import { useScrollAction } from './stores/useScrollAction';
 interface CalendarGridViewProps {
     activeDate: string;
     onDateClick?: (date: string) => void;
+    onWeekLongPress?: (date: string) => void;
     onActiveDateChange?: (date: string) => void;
 }
 
-const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate, onDateClick, onActiveDateChange }) => {
-    const { monthGroups, loadMore, deleteEvent, getEventsForDate } = useDataAction(activeDate);
+const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate, onDateClick, onWeekLongPress, onActiveDateChange }) => {
+    const { monthGroups, loadMore, deleteEvent, getEventsForDate, getWeekPlanEvents } = useDataAction(activeDate);
     const containerRef = useRef<HTMLDivElement>(null);
     const { handleScroll } = useScrollAction(containerRef, monthGroups, loadMore, activeDate, onActiveDateChange);
 
@@ -22,7 +23,14 @@ const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate, onDateC
                 <div key={monthGroup.monthKey}>
                     <MonthHeader monthDate={monthGroup.monthDate} />
                     {monthGroup.weeks.map((weekDays, weekIdx) => (
-                        <WeekRow key={`${monthGroup.monthKey}-${weekIdx}`} weekDays={weekDays}>
+                        <WeekRow
+                            key={`${monthGroup.monthKey}-${weekIdx}`}
+                            weekDays={weekDays}
+                            weekEvents={getWeekPlanEvents(weekDays)}
+                            onWeekClick={onDateClick}
+                            onWeekLongPress={onWeekLongPress}
+                            onDeleteEvent={deleteEvent}
+                        >
                             {weekDays.map(date => (
                                 <DayCell
                                     key={date.toString()}

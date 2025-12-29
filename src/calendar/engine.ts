@@ -88,6 +88,17 @@ export class CalendarEngine {
         return dayEvents;
     }
 
+    static filterWeekPlanEvents(events: CalendarEvent[], weekDays: Date[]): CalendarEvent[] {
+        const firstDay = dayjs(weekDays[0]).startOf('day');
+        const lastDay = dayjs(weekDays[weekDays.length - 1]).endOf('day');
+
+        return events.filter(event =>
+            event.isWeekPlan &&
+            dayjs(event.date).isAfter(firstDay.subtract(1, 'second')) &&
+            dayjs(event.date).isBefore(lastDay.add(1, 'second'))
+        );
+    }
+
     static getWeekNumber(date: Date): number {
         return dayjs(date).week();
     }

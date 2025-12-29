@@ -8,7 +8,7 @@ export const useCalendarPageStore = () => {
     const [activeDate, setActiveDate] = useState(formatDate(new Date()));
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [initialModalData, setInitialModalData] = useState<{ startTime?: string, date?: string }>({});
+    const [initialModalData, setInitialModalData] = useState<{ startTime?: string, date?: string, isWeekPlan?: boolean }>({});
 
     const navigate = useCallback((direction: 'prev' | 'next') => {
         const unit = view === 'grid' ? 'month' : 'day';
