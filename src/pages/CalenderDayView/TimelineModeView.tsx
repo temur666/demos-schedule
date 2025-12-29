@@ -22,7 +22,7 @@ const TimelineModeView: React.FC<TimelineModeViewProps> = ({ events }) => {
     };
 
     return (
-        <div className="p-4" onWheel={handleWheel}>
+        <div className="flex flex-col" onWheel={handleWheel}>
             {Array.from({ length: 8 }).map((_, rowIndex) => {
                 const startMins = rowIndex * TIMELINE_CONFIG.HOURS_PER_ROW * 60;
                 const endMins = (rowIndex + 1) * TIMELINE_CONFIG.HOURS_PER_ROW * 60;
@@ -63,23 +63,23 @@ const TimelineModeView: React.FC<TimelineModeViewProps> = ({ events }) => {
                 );
 
                 return (
-                    <div key={rowIndex} className="flex flex-col mb-4">
-                        <div className="flex justify-between px-1 mb-1">
-                            <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-tighter">
+                    <div key={rowIndex} className="flex flex-col border-t border-gray-100 dark:border-white/10">
+                        <div className="flex justify-between px-4 py-1.5 bg-gray-50/50 dark:bg-white/5">
+                            <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
                                 {minutesToTime(startMins)}
                             </span>
-                            <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-tighter">
+                            <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
                                 {minutesToTime(endMins)}
                             </span>
                         </div>
                         <div
-                            className="relative bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/10 overflow-hidden transition-all duration-300"
+                            className="relative transition-all duration-300"
                             style={{ height: `${containerHeight}px` }}
                         >
                             {/* Grid Lines */}
                             <div className="absolute inset-0 flex justify-between px-[33.33%] pointer-events-none">
-                                <div className="h-full border-r border-gray-200/50 dark:border-white/5 border-dashed" />
-                                <div className="h-full border-r border-gray-200/50 dark:border-white/5 border-dashed" />
+                                <div className="h-full border-r border-gray-100 dark:border-white/5" />
+                                <div className="h-full border-r border-gray-100 dark:border-white/5" />
                             </div>
 
                             {layoutEvents.map((event: any) => (
