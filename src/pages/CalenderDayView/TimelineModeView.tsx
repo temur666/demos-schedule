@@ -1,5 +1,4 @@
 import React from 'react';
-import { minutesToTime } from '../../calendar/utils';
 import { assignLayoutToEvents } from './utils';
 import TimelineEventCard from './TimelineEventCard';
 import { useTimelineUIStore } from './stores/useTimelineUIStore';
@@ -100,14 +99,14 @@ const TimelineModeView: React.FC<TimelineModeViewProps> = ({ events }) => {
                 );
             })}
 
-            {/* 底部 24:00 指示线 */}
+            {/* 底部 00:00 指示线 */}
             <div className="flex items-center h-8">
-                <div className="w-8 flex-shrink-0 text-[11px] font-medium text-gray-400 dark:text-gray-500 text-center">
-                    24
+                <div className="w-12 flex-shrink-0 text-[11px] font-medium text-gray-400 dark:text-gray-500 text-center">
+                    0
                 </div>
                 <div className="flex-1 border-t border-gray-100 dark:border-white/10" />
-                <div className="w-8 flex-shrink-0 text-[11px] font-medium text-gray-400 dark:text-gray-500 text-center">
-                    24
+                <div className="w-12 flex-shrink-0 text-[11px] font-medium text-gray-400 dark:text-gray-500 text-center">
+                    3
                 </div>
             </div>
         </div>
