@@ -5,7 +5,7 @@ interface GridUIState {
     setRowHeight: (height: number) => void;
 }
 
-export const MIN_ROW_HEIGHT = 100;
+export const MIN_ROW_HEIGHT = 160;
 export const MAX_ROW_HEIGHT = 400;
 export const DEFAULT_ROW_HEIGHT = 160;
 
