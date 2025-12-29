@@ -7,7 +7,7 @@ import { CalendarTopBar } from '../components/CalendarTopBar';
 import DateWidget from '../components/DateWidget/DateWidget';
 import type { CreateEventInput } from '../types/event';
 import { useEvents } from '../contexts/useEvents';
-import { minutesToTime } from '../calendar/utils';
+import { minutesToTime, formatDate } from '../calendar/utils';
 import { useCalendarPageStore } from '../stores/useCalendarPageStore';
 import { useViewSwipe } from '../hooks/useViewSwipe';
 
@@ -56,6 +56,10 @@ const CalendarPage: React.FC = () => {
 
     const handleAddEvent = (input: CreateEventInput) => {
         confirmCreate(input);
+    };
+
+    const handleBackToToday = () => {
+        setActiveDate(formatDate(new Date()));
     };
 
 
@@ -129,7 +133,7 @@ const CalendarPage: React.FC = () => {
             />
 
 
-            <DateWidget date={activeDate} />
+            <DateWidget date={activeDate} onDoubleClick={handleBackToToday} />
         </div>
     );
 };
