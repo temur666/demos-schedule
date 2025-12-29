@@ -5,7 +5,7 @@ interface MonthHeaderProps {
     monthDate: any;
 }
 
-const MonthHeader: React.FC<MonthHeaderProps> = ({ monthDate }) => {
+const MonthHeaderComponent: React.FC<MonthHeaderProps> = ({ monthDate }) => {
     return (
         <div className="sticky top-0 z-20 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/5">
             <div className="px-2 py-4 flex items-center">
@@ -17,4 +17,4 @@ const MonthHeader: React.FC<MonthHeaderProps> = ({ monthDate }) => {
     );
 };
 
-export default React.memo(MonthHeader);
+export const MonthHeader = React.memo(MonthHeaderComponent);

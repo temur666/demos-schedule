@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import MonthHeader from './components/MonthHeader';
+import { MonthHeader } from './components/MonthHeader';
 import WeekRow from './components/WeekRow';
 import DayCell from './components/DayCell';
 import { useDataAction } from './stores/useDataAction';
