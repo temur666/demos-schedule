@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { minutesToTime, formatDate, dayjs } from '../calendar/utils';
 import { useCalendarDayStore } from '../stores/useCalendarDayStore';
 
@@ -10,6 +10,7 @@ interface CalendarDayViewProps {
 
 const CalendarDayView: React.FC<CalendarDayViewProps> = ({ activeDate, onBlankLongPress, onActiveDateChange }) => {
     const { days, loadMore, handleDeleteEvent, getEventsForDate } = useCalendarDayStore(activeDate);
+    const [layoutMode, setLayoutMode] = useState<'linear' | 'timeline'>('linear');
     const containerRef = useRef<HTMLDivElement>(null);
     const lastScrollTop = useRef(0);
     const prevHeight = useRef(0);
@@ -159,102 +160,219 @@ const CalendarDayView: React.FC<CalendarDayViewProps> = ({ activeDate, onBlankLo
                                     <h2 className={`text-3xl font-black uppercase tracking-widest font-display-bold ${isToday ? 'text-red-500' : 'text-gray-900 dark:text-white'}`}>
                                         {dayjs(day).format('dddd, MMMM D')}
                                     </h2>
-                                    {isToday && <span className="text-[10px] bg-red-500 text-white px-2 py-1 rounded-full font-bold uppercase tracking-wider">Today</span>}
-                                </div>
-                            </div>
-
-                            {/* All Day Section */}
-                            <div className="border-b border-gray-100 dark:border-white/10">
-                                <div className="flex min-h-[40px] relative">
-                                    <div className="w-16 flex-shrink-0 border-r border-gray-100 dark:border-white/10 bg-gray-50/50 dark:bg-white/5 flex items-center justify-center">
-                                        <span className="text-[10px] font-medium text-gray-400">all-day</span>
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={() => setLayoutMode(prev => prev === 'linear' ? 'timeline' : 'linear')}
+                                            className="p-2 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
+                                        >
+                                            <span className="material-symbols-outlined text-[20px] block">
+                                                {layoutMode === 'linear' ? 'grid_view' : 'view_day'}
+                                            </span>
+                                        </button>
+                                        {isToday && <span className="text-[10px] bg-red-500 text-white px-2 py-1 rounded-full font-bold uppercase tracking-wider">Today</span>}
                                     </div>
-                                    <div className="flex-1 p-1"></div>
                                 </div>
                             </div>
 
-                            {/* Timeline */}
-                            <div className="relative">
-                                <div className="flex flex-col">
-                                    {Array.from({ length: 24 }).map((_, i) => {
-                                        const hour = i % 12 || 12;
-                                        const ampm = i < 12 ? 'AM' : 'PM';
-                                        const slotTime = i * 60;
+                            {layoutMode === 'linear' ? (
+                                <>
+                                    {/* All Day Section */}
+                                    <div className="border-b border-gray-100 dark:border-white/10">
+                                        <div className="flex min-h-[40px] relative">
+                                            <div className="w-16 flex-shrink-0 border-r border-gray-100 dark:border-white/10 bg-gray-50/50 dark:bg-white/5 flex items-center justify-center">
+                                                <span className="text-[10px] font-medium text-gray-400">all-day</span>
+                                            </div>
+                                            <div className="flex-1 p-1"></div>
+                                        </div>
+                                    </div>
 
-                                        return (
-                                            <div
-                                                key={i}
-                                                className="flex h-[60px] relative group active:bg-gray-100 dark:active:bg-white/10 transition-all duration-200 cursor-crosshair"
-                                                onContextMenu={(e) => {
-                                                    e.preventDefault();
-                                                    onBlankLongPress?.(dateStr, slotTime);
-                                                }}
-                                            >
-                                                <div className="w-16 flex-shrink-0 flex justify-end pr-3 pt-2 text-[11px] font-medium text-gray-400 select-none group-hover:text-red-500 transition-colors">
-                                                    {hour} {ampm}
-                                                </div>
-                                                <div className="flex-1 border-t border-gray-100 dark:border-white/10 relative">
-                                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                                        <div className="size-8 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 scale-75 group-hover:scale-100 transition-transform">
-                                                            <span className="material-symbols-outlined text-[20px]">add</span>
+                                    {/* Timeline */}
+                                    <div className="relative">
+                                        <div className="flex flex-col">
+                                            {Array.from({ length: 24 }).map((_, i) => {
+                                                const hour = i % 12 || 12;
+                                                const ampm = i < 12 ? 'AM' : 'PM';
+                                                const slotTime = i * 60;
+
+                                                return (
+                                                    <div
+                                                        key={i}
+                                                        className="flex h-[60px] relative group active:bg-gray-100 dark:active:bg-white/10 transition-all duration-200 cursor-crosshair"
+                                                        onContextMenu={(e) => {
+                                                            e.preventDefault();
+                                                            onBlankLongPress?.(dateStr, slotTime);
+                                                        }}
+                                                    >
+                                                        <div className="w-16 flex-shrink-0 flex justify-end pr-3 pt-2 text-[11px] font-medium text-gray-400 select-none group-hover:text-red-500 transition-colors">
+                                                            {hour} {ampm}
+                                                        </div>
+                                                        <div className="flex-1 border-t border-gray-100 dark:border-white/10 relative">
+                                                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                                <div className="size-8 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 scale-75 group-hover:scale-100 transition-transform">
+                                                                    <span className="material-symbols-outlined text-[20px]">add</span>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
+                                                );
+                                            })}
+                                        </div>
 
-                                {/* Real Events Overlay */}
-                                <div className="absolute top-0 left-16 right-0 bottom-0 pointer-events-none">
-                                    {assignLayoutToEvents(dayEvents).map((event: any) => {
-                                        const top = calculatePosition(event.startTime);
-                                        const height = calculateHeight(event.startTime, event.endTime);
-                                        const width = 100 / (event.totalColumns || 1);
-                                        const left = (event.column || 0) * width;
-                                        const textColor = getTextColor(event.color);
+                                        {/* Real Events Overlay */}
+                                        <div className="absolute top-0 left-16 right-0 bottom-0 pointer-events-none">
+                                            {assignLayoutToEvents(dayEvents).map((event: any) => {
+                                                const top = calculatePosition(event.startTime);
+                                                const height = calculateHeight(event.startTime, event.endTime);
+                                                const width = 100 / (event.totalColumns || 1);
+                                                const left = (event.column || 0) * width;
+                                                const textColor = getTextColor(event.color);
+
+                                                return (
+                                                    <div
+                                                        key={event.id}
+                                                        className={`absolute rounded-xl p-2 cursor-pointer hover:brightness-95 transition-all shadow-sm pointer-events-auto overflow-hidden group/event border border-white/10 ${textColor}`}
+                                                        style={{
+                                                            top: `${top}px`,
+                                                            height: `${height}px`,
+                                                            left: `${left}%`,
+                                                            width: `calc(${width}% - 4px)`,
+                                                            backgroundColor: event.color,
+                                                            zIndex: 10 + (event.column || 0)
+                                                        }}
+                                                    >
+                                                        <div className="flex flex-col h-full relative">
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleDeleteEvent(event.id);
+                                                                }}
+                                                                className="absolute top-0 right-0 size-6 flex items-center justify-center rounded-full bg-black/10 opacity-0 group-hover/event:opacity-100 transition-opacity hover:bg-red-500 hover:text-white"
+                                                            >
+                                                                <span className="material-symbols-outlined text-[14px]">close</span>
+                                                            </button>
+                                                            <span className="text-xs font-bold leading-tight truncate pr-6">{event.title}</span>
+                                                            <span className="text-[10px] opacity-70 mt-auto font-medium">
+                                                                {formatTimeRange(event)}
+                                                            </span>
+
+                                                            {/* Segment Indicators */}
+                                                            {event.isSegment && !event.isLastSegment && (
+                                                                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-1 bg-white/40 rounded-full" style={{ width: '24px' }} />
+                                                            )}
+                                                            {event.isSegment && !event.isFirstSegment && (
+                                                                <div className="absolute top-0 left-1/2 -translate-x-1/2 h-1 bg-white/40 rounded-full" style={{ width: '24px' }} />
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="p-4 space-y-4">
+                                    {Array.from({ length: 8 }).map((_, rowIndex) => {
+                                        const hoursPerRow = 3;
+                                        const startMins = rowIndex * hoursPerRow * 60;
+                                        const endMins = (rowIndex + 1) * hoursPerRow * 60;
+
+                                        // 过滤并切分属于这个 Slot 的事件
+                                        const slotEvents = dayEvents.flatMap(event => {
+                                            const eStart = event.startTime;
+                                            const eEnd = event.endTime;
+
+                                            // 检查事件是否在该 Slot 时间范围内
+                                            if (eStart < endMins && eEnd > startMins) {
+                                                const segmentStart = Math.max(eStart, startMins);
+                                                const segmentEnd = Math.min(eEnd, endMins);
+
+                                                return [{
+                                                    ...event,
+                                                    // 在 Slot 内部的相对时间
+                                                    displayStart: segmentStart - startMins,
+                                                    displayEnd: segmentEnd - startMins,
+                                                    // 标记是否被切断
+                                                    isCutStart: eStart < startMins,
+                                                    isCutEnd: eEnd > endMins
+                                                }];
+                                            }
+                                            return [];
+                                        });
+
+                                        const layoutEvents = assignLayoutToEvents(slotEvents.map(e => ({
+                                            ...e,
+                                            startTime: e.displayStart,
+                                            endTime: e.displayEnd
+                                        })));
 
                                         return (
-                                            <div
-                                                key={event.id}
-                                                className={`absolute rounded-xl p-2 cursor-pointer hover:brightness-95 transition-all shadow-sm pointer-events-auto overflow-hidden group/event border border-white/10 ${textColor}`}
-                                                style={{
-                                                    top: `${top}px`,
-                                                    height: `${height}px`,
-                                                    left: `${left}%`,
-                                                    width: `calc(${width}% - 4px)`,
-                                                    backgroundColor: event.color,
-                                                    zIndex: 10 + (event.column || 0)
-                                                }}
-                                            >
-                                                <div className="flex flex-col h-full relative">
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleDeleteEvent(event.id);
-                                                        }}
-                                                        className="absolute top-0 right-0 size-6 flex items-center justify-center rounded-full bg-black/10 opacity-0 group-hover/event:opacity-100 transition-opacity hover:bg-red-500 hover:text-white"
-                                                    >
-                                                        <span className="material-symbols-outlined text-[14px]">close</span>
-                                                    </button>
-                                                    <span className="text-xs font-bold leading-tight truncate pr-6">{event.title}</span>
-                                                    <span className="text-[10px] opacity-70 mt-auto font-medium">
-                                                        {formatTimeRange(event)}
+                                            <div key={rowIndex} className="flex flex-col gap-2">
+                                                <div className="flex justify-between px-1">
+                                                    <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-tighter">
+                                                        {minutesToTime(startMins)}
                                                     </span>
+                                                    <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-tighter">
+                                                        {minutesToTime(endMins)}
+                                                    </span>
+                                                </div>
+                                                <div className="relative h-[100px] bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/10 overflow-hidden">
+                                                    {/* Grid Lines */}
+                                                    <div className="absolute inset-0 flex justify-between px-[33.33%] pointer-events-none">
+                                                        <div className="h-full border-r border-gray-200/50 dark:border-white/5 border-dashed" />
+                                                        <div className="h-full border-r border-gray-200/50 dark:border-white/5 border-dashed" />
+                                                    </div>
 
-                                                    {/* Segment Indicators */}
-                                                    {event.isSegment && !event.isLastSegment && (
-                                                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-1 bg-white/40 rounded-full" style={{ width: '24px' }} />
-                                                    )}
-                                                    {event.isSegment && !event.isFirstSegment && (
-                                                        <div className="absolute top-0 left-1/2 -translate-x-1/2 h-1 bg-white/40 rounded-full" style={{ width: '24px' }} />
-                                                    )}
+                                                    {layoutEvents.map((event: any) => {
+                                                        const slotDuration = hoursPerRow * 60;
+                                                        const left = (event.startTime / slotDuration) * 100;
+                                                        const width = ((event.endTime - event.startTime) / slotDuration) * 100;
+                                                        const textColor = getTextColor(event.color);
+
+                                                        // 垂直堆叠逻辑
+                                                        const rowHeight = 80;
+                                                        const itemHeight = event.totalColumns > 1 ? (rowHeight / event.totalColumns) - 4 : rowHeight;
+                                                        const top = 10 + (event.column * (itemHeight + 4));
+
+                                                        return (
+                                                            <div
+                                                                key={event.id}
+                                                                className={`absolute rounded-xl p-2 shadow-sm border border-white/10 transition-all ${textColor}`}
+                                                                style={{
+                                                                    left: `${left}%`,
+                                                                    width: `calc(${Math.max(width, 5)}% - 4px)`,
+                                                                    top: `${top}px`,
+                                                                    height: `${itemHeight}px`,
+                                                                    backgroundColor: event.color,
+                                                                    zIndex: 10 + event.column
+                                                                }}
+                                                            >
+                                                                <div className="flex flex-col h-full relative overflow-hidden">
+                                                                    <span className="text-[11px] font-bold leading-none truncate">
+                                                                        {event.title}
+                                                                    </span>
+                                                                    {itemHeight > 30 && (
+                                                                        <span className="text-[9px] opacity-70 mt-auto font-medium">
+                                                                            {formatTimeRange(event)}
+                                                                        </span>
+                                                                    )}
+
+                                                                    {/* Cut Indicators */}
+                                                                    {event.isCutEnd && (
+                                                                        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-4 bg-white/30 rounded-full" />
+                                                                    )}
+                                                                    {event.isCutStart && (
+                                                                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 bg-white/30 rounded-full" />
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })}
                                                 </div>
                                             </div>
                                         );
                                     })}
                                 </div>
-                            </div>
+                            )}
                         </div>
                     );
                 })}
