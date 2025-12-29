@@ -38,10 +38,10 @@ const WeekPlanCell: React.FC<WeekPlanCellProps> = ({ weekNum, weekDays, events, 
             onMouseLeave={handleTouchEnd}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
-            className="col-span-2 relative bg-surface-secondary dark:bg-white/5 p-2 flex flex-col group hover:bg-surface-tertiary dark:hover:bg-white/20 transition-colors cursor-pointer"
-            style={{ minHeight: `${rowHeight}px` }}
+            className="col-span-2 relative bg-surface-secondary dark:bg-white/5 p-2 flex flex-col group hover:bg-surface-tertiary dark:hover:bg-white/20 transition-colors cursor-pointer overflow-hidden"
+            style={{ minHeight: `${rowHeight}px`, height: `${rowHeight}px` }}
         >
-            <div className="flex justify-between items-start mb-2">
+            <div className="flex justify-between items-start mb-2 shrink-0">
                 <div className="flex flex-col">
                     <span className="text-xl font-medium text-gray-900 dark:text-white font-display tracking-tight">
                         {weekNum} 周
@@ -52,14 +52,35 @@ const WeekPlanCell: React.FC<WeekPlanCellProps> = ({ weekNum, weekDays, events, 
                 </div>
             </div>
 
-            <div className="flex flex-col gap-1 mt-1">
-                {events.map(event => (
-                    <EventItem
-                        key={event.id}
-                        event={event}
-                        onDeleteEvent={onDeleteEvent}
-                    />
-                ))}
+            <div className="flex flex-col gap-1 mt-1 overflow-hidden">
+                {(() => {
+                    // Header is approx 52px + 8px padding = 60px
+                    // Event item is approx 40px + 4px gap = 44px
+                    const availableHeight = rowHeight - 60;
+                    const itemHeight = 44;
+                    const maxItems = Math.max(1, Math.floor(availableHeight / itemHeight));
+                    const shouldLimit = events.length > maxItems;
+                    const displayCount = shouldLimit ? maxItems - 1 : events.length;
+                    const visibleEvents = events.slice(0, displayCount);
+                    const remainingCount = events.length - displayCount;
+
+                    return (
+                        <>
+                            {visibleEvents.map(event => (
+                                <EventItem
+                                    key={event.id}
+                                    event={event}
+                                    onDeleteEvent={onDeleteEvent}
+                                />
+                            ))}
+                            {shouldLimit && (
+                                <div className="pl-2 text-xs text-gray-500 dark:text-gray-400 font-medium">
+                                    + 还有{remainingCount}个
+                                </div>
+                            )}
+                        </>
+                    );
+                })()}
             </div>
         </div>
     );
