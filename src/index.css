@@ -10,7 +10,31 @@
   --color-primary: #1A1A1A;
   --color-background-light: #ffffff;
   --color-background-dark: #000000;
-  
+
+  /* Surface Colors */
+  --color-surface-secondary: #f3f4f6;
+  /* gray-100 */
+  --color-surface-tertiary: #e5e7eb;
+  /* gray-200 */
+  --color-surface-hover: #f9fafb;
+  /* gray-50 */
+
+  /* Border Colors */
+  --color-border-subtle: #f3f4f6;
+  /* gray-100 */
+  --color-border-default: #e5e7eb;
+  /* gray-200 */
+
+  /* Typography Sizes */
+  --font-size-tiny: 0.5rem;
+  /* 8px */
+  --font-size-micro: 0.5625rem;
+  /* 9px */
+  --font-size-label-sm: 0.625rem;
+  /* 10px */
+  --font-size-label-base: 0.75rem;
+  /* 12px */
+
   --font-display: "Inter", sans-serif;
   --font-serif-art: "Playfair Display", serif;
   --font-display-bold: "Bebas Neue", sans-serif;
@@ -19,12 +43,13 @@
 
 /* Hide scrollbar for all elements */
 ::-webkit-scrollbar {
-    width: 0px;
-    background: transparent;
+  width: 0px;
+  background: transparent;
 }
+
 * {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 
@@ -33,8 +58,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: max(884px, 100dvh);
-  background-color: #f9fafb; /* bg-gray-50 */
-  color: #111827; /* text-gray-900 */
+  background-color: #f9fafb;
+  /* bg-gray-50 */
+  color: #111827;
+  /* text-gray-900 */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -67,12 +94,14 @@ body {
   background: rgba(255, 255, 255, 0.2);
 }
 
-.no-scrollbar, .hide-scrollbar {
+.no-scrollbar,
+.hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
-.no-scrollbar::-webkit-scrollbar, .hide-scrollbar::-webkit-scrollbar {
+.no-scrollbar::-webkit-scrollbar,
+.hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
 
@@ -81,8 +110,15 @@ body {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-fade-in {
