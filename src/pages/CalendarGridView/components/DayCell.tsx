@@ -15,13 +15,13 @@ const DayCell: React.FC<DayCellProps> = ({ date, events, onDateClick, onDeleteEv
         <div
             data-date={dateStr}
             onDoubleClick={() => onDateClick?.(dateStr)}
-            className="relative bg-white dark:bg-black min-h-[140px] p-3 flex flex-col group hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
+            className="relative bg-white dark:bg-black min-h-[160px] p-2 flex flex-col group hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
         >
-            <div className="flex justify-between items-start mb-2">
+            <div className="flex justify-between items-center mb-2">
                 <span className="text-[10px] font-semibold text-gray-400 uppercase">
                     {dayjs(date).format('ddd')}
                 </span>
-                <span className="text-3xl font-black font-serif-art text-gray-900 dark:text-white">
+                <span className="text-xl font-black font-serif text-gray-900 dark:text-white">
                     {dayjs(date).date()}
                 </span>
             </div>
