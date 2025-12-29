@@ -66,17 +66,17 @@ const TimelineModeView: React.FC<TimelineModeViewProps> = ({ events }) => {
                     <div key={rowIndex} className="flex flex-col">
                         {/* 时间指示线与标签 */}
                         <div className="flex items-center h-8">
-                            <div className="w-12 flex-shrink-0 text-[11px] font-medium text-gray-400 dark:text-gray-500 text-center">
+                            <div className="w-8 flex-shrink-0 text-[11px] font-medium text-gray-400 dark:text-gray-500 text-center">
                                 {Math.floor(startMins / 60)}
                             </div>
                             <div className="flex-1 border-t border-gray-100 dark:border-white/10" />
-                            <div className="w-12 flex-shrink-0 text-[11px] font-medium text-gray-400 dark:text-gray-500 text-center">
+                            <div className="w-8 flex-shrink-0 text-[11px] font-medium text-gray-400 dark:text-gray-500 text-center">
                                 {Math.floor(endMins / 60)}
                             </div>
                         </div>
 
                         {/* 事件内容区域 */}
-                        <div className="px-12">
+                        <div className="px-8">
                             <div
                                 className="relative transition-all duration-300"
                                 style={{ height: `${containerHeight}px` }}
@@ -102,12 +102,12 @@ const TimelineModeView: React.FC<TimelineModeViewProps> = ({ events }) => {
 
             {/* 底部 24:00 指示线 */}
             <div className="flex items-center h-8">
-                <div className="w-12 flex-shrink-0 text-[11px] font-medium text-gray-400 dark:text-gray-500 text-center">
-                    0
+                <div className="w-8 flex-shrink-0 text-[11px] font-medium text-gray-400 dark:text-gray-500 text-center">
+                    24
                 </div>
                 <div className="flex-1 border-t border-gray-100 dark:border-white/10" />
-                <div className="w-12 flex-shrink-0 text-[11px] font-medium text-gray-400 dark:text-gray-500 text-center">
-                    3
+                <div className="w-8 flex-shrink-0 text-[11px] font-medium text-gray-400 dark:text-gray-500 text-center">
+                    24
                 </div>
             </div>
         </div>
