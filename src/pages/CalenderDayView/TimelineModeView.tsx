@@ -72,23 +72,25 @@ const TimelineModeView: React.FC<TimelineModeViewProps> = ({ events }) => {
                                 {minutesToTime(endMins)}
                             </span>
                         </div>
-                        <div
-                            className="relative transition-all duration-300"
-                            style={{ height: `${containerHeight}px` }}
-                        >
-                            {/* Grid Lines */}
-                            <div className="absolute inset-0 flex justify-between px-[33.33%] pointer-events-none">
-                                <div className="h-full border-r border-gray-100 dark:border-white/5" />
-                                <div className="h-full border-r border-gray-100 dark:border-white/5" />
-                            </div>
+                        <div className="px-4">
+                            <div
+                                className="relative transition-all duration-300"
+                                style={{ height: `${containerHeight}px` }}
+                            >
+                                {/* Grid Lines */}
+                                <div className="absolute inset-0 flex justify-between px-[33.33%] pointer-events-none">
+                                    <div className="h-full border-r border-gray-100 dark:border-white/5" />
+                                    <div className="h-full border-r border-gray-100 dark:border-white/5" />
+                                </div>
 
-                            {layoutEvents.map((event: any) => (
-                                <TimelineEventCard
-                                    key={event.id}
-                                    event={event}
-                                    hoursPerRow={TIMELINE_CONFIG.HOURS_PER_ROW}
-                                />
-                            ))}
+                                {layoutEvents.map((event: any) => (
+                                    <TimelineEventCard
+                                        key={event.id}
+                                        event={event}
+                                        hoursPerRow={TIMELINE_CONFIG.HOURS_PER_ROW}
+                                    />
+                                ))}
+                            </div>
                         </div>
                     </div>
                 );
