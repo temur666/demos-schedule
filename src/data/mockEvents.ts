@@ -1,4 +1,4 @@
-import { CalendarEvent } from '../types/event';
+import type { CalendarEvent } from '../types/event';
 
 const TODAY = '2025-12-30';
 
