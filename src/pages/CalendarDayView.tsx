@@ -145,7 +145,16 @@ const CalendarDayView: React.FC<CalendarDayViewProps> = ({ activeDate, onBlankLo
             <div className="flex flex-col pb-32">
                 {days.map((day) => {
                     const dateStr = formatDate(day);
-                    const dayEvents = getEventsForDate(day);
+                    const rawEvents = getEventsForDate(day);
+                    const dayEvents = [...rawEvents, {
+                        id: 'test-cross-row',
+                        title: '跨行测试事件 🚀',
+                        startTime: 840, // 14:00
+                        endTime: 1020,  // 17:00
+                        color: '#ff4d4f',
+                        date: dateStr,
+                        createdAt: Date.now()
+                    }];
                     const isToday = dateStr === formatDate(new Date());
 
                     return (
@@ -305,6 +314,11 @@ const CalendarDayView: React.FC<CalendarDayViewProps> = ({ activeDate, onBlankLo
                                             endTime: e.displayEnd
                                         })));
 
+                                        const maxLayers = layoutEvents.length > 0 ? layoutEvents[0].totalColumns : 1;
+                                        const FIXED_ITEM_HEIGHT = 46;
+                                        const ITEM_GAP = 8;
+                                        const containerHeight = Math.max(90, maxLayers * FIXED_ITEM_HEIGHT + (maxLayers + 1) * ITEM_GAP);
+
                                         return (
                                             <div key={rowIndex} className="flex flex-col gap-2">
                                                 <div className="flex justify-between px-1">
@@ -315,7 +329,10 @@ const CalendarDayView: React.FC<CalendarDayViewProps> = ({ activeDate, onBlankLo
                                                         {minutesToTime(endMins)}
                                                     </span>
                                                 </div>
-                                                <div className="relative h-[100px] bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/10 overflow-hidden">
+                                                <div
+                                                    className="relative bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/10 overflow-hidden transition-all duration-300"
+                                                    style={{ height: `${containerHeight}px` }}
+                                                >
                                                     {/* Grid Lines */}
                                                     <div className="absolute inset-0 flex justify-between px-[33.33%] pointer-events-none">
                                                         <div className="h-full border-r border-gray-200/50 dark:border-white/5 border-dashed" />
@@ -328,10 +345,7 @@ const CalendarDayView: React.FC<CalendarDayViewProps> = ({ activeDate, onBlankLo
                                                         const width = ((event.endTime - event.startTime) / slotDuration) * 100;
                                                         const textColor = getTextColor(event.color);
 
-                                                        // 垂直堆叠逻辑
-                                                        const rowHeight = 80;
-                                                        const itemHeight = event.totalColumns > 1 ? (rowHeight / event.totalColumns) - 4 : rowHeight;
-                                                        const top = 10 + (event.column * (itemHeight + 4));
+                                                        const top = ITEM_GAP + (event.column * (FIXED_ITEM_HEIGHT + ITEM_GAP));
 
                                                         return (
                                                             <div
@@ -341,7 +355,7 @@ const CalendarDayView: React.FC<CalendarDayViewProps> = ({ activeDate, onBlankLo
                                                                     left: `${left}%`,
                                                                     width: `calc(${Math.max(width, 5)}% - 4px)`,
                                                                     top: `${top}px`,
-                                                                    height: `${itemHeight}px`,
+                                                                    height: `${FIXED_ITEM_HEIGHT}px`,
                                                                     backgroundColor: event.color,
                                                                     zIndex: 10 + event.column
                                                                 }}
@@ -350,11 +364,9 @@ const CalendarDayView: React.FC<CalendarDayViewProps> = ({ activeDate, onBlankLo
                                                                     <span className="text-[11px] font-bold leading-none truncate">
                                                                         {event.title}
                                                                     </span>
-                                                                    {itemHeight > 30 && (
-                                                                        <span className="text-[9px] opacity-70 mt-auto font-medium">
-                                                                            {formatTimeRange(event)}
-                                                                        </span>
-                                                                    )}
+                                                                    <span className="text-[9px] opacity-70 mt-auto font-medium">
+                                                                        {formatTimeRange(event)}
+                                                                    </span>
 
                                                                     {/* Cut Indicators */}
                                                                     {event.isCutEnd && (
