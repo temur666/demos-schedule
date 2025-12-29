@@ -22,7 +22,7 @@ const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({ activeDate, onA
         <main
             ref={containerRef}
             onScroll={handleScroll}
-            className="flex-1 p-0 pb-32 overflow-y-auto hide-scrollbar"
+            className="flex-1 p-0 pb-32 overflow-y-auto hide-scrollbar bg-gray-100 dark:bg-black"
         >
             {days.map(date => (
                 <AgendaDay

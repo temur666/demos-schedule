@@ -12,8 +12,16 @@ interface EventContextType {
 
 export const EventContext = createContext<EventContextType | undefined>(undefined);
 
+import { MOCK_EVENTS } from '../data/mockEvents';
+
 export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [events, setEvents] = useState<CalendarEvent[]>(() => LocalEventRepo.load());
+    const [events, setEvents] = useState<CalendarEvent[]>(() => {
+        const localEvents = LocalEventRepo.load();
+        // 简单去重，避免重复添加 mock 数据
+        const existingIds = new Set(localEvents.map(e => e.id));
+        const newMockEvents = MOCK_EVENTS.filter(e => !existingIds.has(e.id));
+        return [...localEvents, ...newMockEvents];
+    });
 
     useEffect(() => {
         LocalEventRepo.save(events);
