@@ -1,5 +1,5 @@
 import React from 'react';
-import { CalendarEngine } from '../../calendar/engine';
+import { CalendarEngine } from '../../../calendar/engine';
 
 interface WeekRowProps {
     weekDays: any[];

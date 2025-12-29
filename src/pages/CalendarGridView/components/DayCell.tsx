@@ -1,5 +1,5 @@
 import React from 'react';
-import { dayjs, formatDate, minutesToTime } from '../../calendar/utils';
+import { dayjs, formatDate, minutesToTime } from '../../../calendar/utils';
 
 interface DayCellProps {
     date: any;
