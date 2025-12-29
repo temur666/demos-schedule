@@ -63,24 +63,28 @@ const TimelineModeView: React.FC<TimelineModeViewProps> = ({ events }) => {
                 );
 
                 return (
-                    <div key={rowIndex} className="flex flex-col border-t border-gray-100 dark:border-white/10">
-                        <div className="flex justify-between px-4 py-1.5 bg-gray-50/50 dark:bg-white/5">
-                            <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+                    <div key={rowIndex} className="flex flex-col">
+                        {/* 时间指示线与标签 */}
+                        <div className="flex items-center h-8">
+                            <div className="w-12 flex-shrink-0 text-[11px] font-medium text-gray-400 dark:text-gray-500 text-center">
                                 {Math.floor(startMins / 60)}
-                            </span>
-                            <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+                            </div>
+                            <div className="flex-1 border-t border-gray-100 dark:border-white/10" />
+                            <div className="w-12 flex-shrink-0 text-[11px] font-medium text-gray-400 dark:text-gray-500 text-center">
                                 {Math.floor(endMins / 60)}
-                            </span>
+                            </div>
                         </div>
-                        <div className="px-4">
+
+                        {/* 事件内容区域 */}
+                        <div className="px-12">
                             <div
                                 className="relative transition-all duration-300"
                                 style={{ height: `${containerHeight}px` }}
                             >
-                                {/* Grid Lines */}
+                                {/* 内部小时分割线 (1h 间隔) */}
                                 <div className="absolute inset-0 flex justify-between px-[33.33%] pointer-events-none">
-                                    <div className="h-full border-r border-gray-100 dark:border-white/5" />
-                                    <div className="h-full border-r border-gray-100 dark:border-white/5" />
+                                    <div className="h-full border-r border-gray-100/50 dark:border-white/5" />
+                                    <div className="h-full border-r border-gray-100/50 dark:border-white/5" />
                                 </div>
 
                                 {layoutEvents.map((event: any) => (
