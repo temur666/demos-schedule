@@ -315,7 +315,7 @@ const CalendarDayView: React.FC<CalendarDayViewProps> = ({ activeDate, onBlankLo
                                         })));
 
                                         const maxLayers = layoutEvents.length > 0 ? layoutEvents[0].totalColumns : 1;
-                                        const FIXED_ITEM_HEIGHT = 46;
+                                        const FIXED_ITEM_HEIGHT = 60;
                                         const ITEM_GAP = 8;
                                         const containerHeight = Math.max(90, maxLayers * FIXED_ITEM_HEIGHT + (maxLayers + 1) * ITEM_GAP);
 
