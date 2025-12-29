@@ -11,7 +11,7 @@ const WeekRow: React.FC<WeekRowProps> = ({ weekDays, children }) => {
 
     return (
         <div className="mb-0">
-            <div className="grid grid-cols-3 gap-px bg-gray-200 dark:bg-white/5 border-b border-gray-200 dark:border-white/10">
+            <div className="grid grid-cols-3 gap-px bg-gray-200 dark:bg-white/10 border-b border-gray-200 dark:border-white/20">
                 <div className="col-span-2 relative bg-gray-100 dark:bg-white/5 min-h-[160px] p-2 flex flex-col justify-between group hover:bg-gray-200 dark:hover:bg-white/10 transition-colors">
                     <span className="text-xl font-medium text-gray-900 dark:text-white font-display tracking-tight">
                         {weekNum} 周
