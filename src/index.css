@@ -39,6 +39,37 @@
   --font-serif-art: "Playfair Display", serif;
   --font-display-bold: "Bebas Neue", sans-serif;
   --font-geometric: "Outfit", sans-serif;
+
+  /* Event Card Colors - Pastel Theme */
+  /* Orange */
+  --color-event-orange-bg: #FFF9EB;
+  --color-event-orange-bar: #F4B553;
+  --color-event-orange-text: #8C6A28;
+
+  /* Green */
+  --color-event-green-bg: #EBF9E6;
+  --color-event-green-bar: #7ED348;
+  --color-event-green-text: #3F6C26;
+
+  /* Blue */
+  --color-event-blue-bg: #EBF8FF;
+  --color-event-blue-bar: #5FA8EE;
+  --color-event-blue-text: #264E75;
+
+  /* Purple */
+  --color-event-purple-bg: #F6EEFD;
+  --color-event-purple-bar: #9F58D6;
+  --color-event-purple-text: #542078;
+
+  /* Pink */
+  --color-event-pink-bg: #FFF0F5;
+  --color-event-pink-bar: #FF6B9C;
+  --color-event-pink-text: #992E52;
+
+  /* Teal */
+  --color-event-teal-bg: #E6FFFA;
+  --color-event-teal-bar: #38B2AC;
+  --color-event-teal-text: #236C68;
 }
 
 /* Hide scrollbar for all elements */
