@@ -1,5 +1,4 @@
 import React from 'react';
-import { minutesToTime } from '../../../calendar/utils';
 import type { CalendarEvent } from '../../../types/event';
 
 interface EventItemProps {
@@ -12,9 +11,6 @@ const EventItem: React.FC<EventItemProps> = ({ event, onDeleteEvent }) => {
         <div className="w-full pl-2 py-0.5 border-l-2 relative group/event" style={{ borderColor: event.color }}>
             <span className="text-micro font-medium text-gray-900 dark:text-white truncate block pr-3">
                 {event.title}
-            </span>
-            <span className="text-tiny text-gray-400 block">
-                {minutesToTime(event.startTime)}
             </span>
             <button
                 onClick={(e) => {

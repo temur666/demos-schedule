@@ -37,7 +37,7 @@ const DayCell: React.FC<DayCellProps> = ({ date, events, onDateClick, onDeleteEv
                     // Event item is approx 40px + 4px gap = 44px
                     // We want to ensure we don't overflow
                     const availableHeight = rowHeight - 44;
-                    const itemHeight = 44;
+                    const itemHeight = 24;
                     const maxItems = Math.max(1, Math.floor(availableHeight / itemHeight));
                     const shouldLimit = events.length > maxItems;
                     const displayCount = shouldLimit ? maxItems - 1 : events.length;
