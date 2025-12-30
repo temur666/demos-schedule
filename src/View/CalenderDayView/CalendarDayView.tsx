@@ -16,7 +16,7 @@ const CalendarDayView: React.FC<CalendarDayViewProps> = ({
     onBlankLongPress,
     onActiveDateChange
 }) => {
-    const { days, loadMore, handleDeleteEvent, getEventsForDate } = useCalendarDayStore(activeDate);
+    const { days, loadMore, getEventsForDate } = useCalendarDayStore(activeDate);
     const [layoutMode, setLayoutMode] = useState<'linear' | 'timeline'>('linear');
     const containerRef = useRef<HTMLDivElement>(null);
     const lastScrollTop = useRef(0);
@@ -109,7 +109,6 @@ const CalendarDayView: React.FC<CalendarDayViewProps> = ({
                                     dateStr={dateStr}
                                     events={dayEvents}
                                     onBlankLongPress={onBlankLongPress}
-                                    onDeleteEvent={handleDeleteEvent}
                                 />
                             ) : (
                                 <TimelineModeView events={dayEvents} />

@@ -9,10 +9,9 @@ interface DayCellProps {
     date: any;
     events: any[];
     onDateClick?: (date: string) => void;
-    onDeleteEvent: (id: string) => void;
 }
 
-const DayCell: React.FC<DayCellProps> = ({ date, events, onDateClick, onDeleteEvent }) => {
+const DayCell: React.FC<DayCellProps> = ({ date, events, onDateClick }) => {
     const dateStr = formatDate(date);
     const { rowHeight } = useGridUIStore();
 
@@ -57,7 +56,6 @@ const DayCell: React.FC<DayCellProps> = ({ date, events, onDateClick, onDeleteEv
                                 <EventItem
                                     key={event.id}
                                     event={event}
-                                    onDeleteEvent={onDeleteEvent}
                                 />
                             ))}
                             {shouldLimit && (

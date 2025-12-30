@@ -15,7 +15,7 @@ interface CalendarGridViewProps {
 }
 
 const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate, onDateClick, onWeekClick, onWeekLongPress, onActiveDateChange }) => {
-    const { monthGroups, loadMore, deleteEvent, getEventsForDate, getWeekPlanEvents } = useDataAction(activeDate);
+    const { monthGroups, loadMore, getEventsForDate, getWeekPlanEvents } = useDataAction(activeDate);
     const containerRef = useRef<HTMLDivElement>(null);
     const { handleScroll } = useScrollAction(containerRef, monthGroups, loadMore, activeDate, onActiveDateChange);
 
@@ -40,7 +40,6 @@ const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate, onDateC
                             weekEvents={getWeekPlanEvents(weekDays)}
                             onWeekClick={onWeekClick}
                             onWeekLongPress={onWeekLongPress}
-                            onDeleteEvent={deleteEvent}
                         >
                             {weekDays.map(date => (
                                 <DayCell
@@ -48,7 +47,6 @@ const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate, onDateC
                                     date={date}
                                     events={getEventsForDate(date)}
                                     onDateClick={onDateClick}
-                                    onDeleteEvent={deleteEvent}
                                 />
                             ))}
                         </WeekRow>

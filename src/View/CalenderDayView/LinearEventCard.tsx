@@ -4,10 +4,9 @@ import { getColorTheme } from '../../utils/colorTheme';
 
 interface LinearEventCardProps {
     event: any;
-    onDelete: (id: string) => void;
 }
 
-const LinearEventCard: React.FC<LinearEventCardProps> = ({ event, onDelete }) => {
+const LinearEventCard: React.FC<LinearEventCardProps> = ({ event }) => {
     const top = calculatePosition(event.startTime);
     const height = calculateHeight(event.startTime, event.endTime);
     const width = 100 / (event.totalColumns || 1);
@@ -26,16 +25,7 @@ const LinearEventCard: React.FC<LinearEventCardProps> = ({ event, onDelete }) =>
             }}
         >
             <div className="flex flex-col h-full relative">
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onDelete(event.id);
-                    }}
-                    className="absolute top-0 right-0 size-6 flex items-center justify-center rounded-full bg-black/10 opacity-0 group-hover/event:opacity-100 transition-opacity hover:bg-red-500 hover:text-white"
-                >
-                    <span className="material-symbols-outlined text-[14px]">close</span>
-                </button>
-                <span className="text-xs font-bold leading-tight truncate pr-6">{event.title}</span>
+                <span className="text-xs font-bold leading-tight truncate">{event.title}</span>
                 <span className="text-[10px] opacity-70 mt-auto font-medium">
                     {formatTimeRange(event)}
                 </span>

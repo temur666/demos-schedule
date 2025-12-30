@@ -6,14 +6,12 @@ interface LinearModeViewProps {
     dateStr: string;
     events: any[];
     onBlankLongPress?: (date: string, time: number) => void;
-    onDeleteEvent: (id: string) => void;
 }
 
 const LinearModeView: React.FC<LinearModeViewProps> = ({
     dateStr,
     events,
-    onBlankLongPress,
-    onDeleteEvent
+    onBlankLongPress
 }) => {
     return (
         <>
@@ -44,16 +42,10 @@ const LinearModeView: React.FC<LinearModeViewProps> = ({
                                     onBlankLongPress?.(dateStr, slotTime);
                                 }}
                             >
-                                <div className="w-16 flex-shrink-0 flex justify-end pr-3 pt-2 text-[11px] font-medium text-gray-400 select-none group-hover:text-red-500 transition-colors">
+                                <div className="w-16 flex-shrink-0 flex justify-end pr-3 pt-2 text-[11px] font-medium text-gray-400 select-none">
                                     {hour} {ampm}
                                 </div>
-                                <div className="flex-1 border-t border-gray-100 dark:border-white/10 relative">
-                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                        <div className="size-8 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 scale-75 group-hover:scale-100 transition-transform">
-                                            <span className="material-symbols-outlined text-[20px]">add</span>
-                                        </div>
-                                    </div>
-                                </div>
+                                <div className="flex-1 border-t border-gray-100 dark:border-white/10" />
                             </div>
                         );
                     })}
@@ -65,7 +57,6 @@ const LinearModeView: React.FC<LinearModeViewProps> = ({
                         <LinearEventCard
                             key={event.id}
                             event={event}
-                            onDelete={onDeleteEvent}
                         />
                     ))}
                 </div>

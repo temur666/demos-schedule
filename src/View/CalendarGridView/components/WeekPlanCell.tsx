@@ -10,10 +10,9 @@ interface WeekPlanCellProps {
     events: CalendarEvent[];
     onWeekClick?: (date: string) => void;
     onWeekLongPress?: (date: string) => void;
-    onDeleteEvent: (id: string) => void;
 }
 
-const WeekPlanCell: React.FC<WeekPlanCellProps> = ({ weekNum, weekDays, events, onWeekClick, onWeekLongPress, onDeleteEvent }) => {
+const WeekPlanCell: React.FC<WeekPlanCellProps> = ({ weekNum, weekDays, events, onWeekClick, onWeekLongPress }) => {
     const firstDayStr = formatDate(weekDays[0]);
     const timerRef = React.useRef<any>(null);
     const { rowHeight } = useGridUIStore();
@@ -70,7 +69,6 @@ const WeekPlanCell: React.FC<WeekPlanCellProps> = ({ weekNum, weekDays, events, 
                                 <EventItem
                                     key={event.id}
                                     event={event}
-                                    onDeleteEvent={onDeleteEvent}
                                 />
                             ))}
                             {shouldLimit && (

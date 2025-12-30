@@ -9,10 +9,9 @@ interface WeekRowProps {
     weekEvents: CalendarEvent[];
     onWeekClick?: (date: string) => void;
     onWeekLongPress?: (date: string) => void;
-    onDeleteEvent: (id: string) => void;
 }
 
-const WeekRow: React.FC<WeekRowProps> = ({ weekDays, children, weekEvents, onWeekClick, onWeekLongPress, onDeleteEvent }) => {
+const WeekRow: React.FC<WeekRowProps> = ({ weekDays, children, weekEvents, onWeekClick, onWeekLongPress }) => {
     const weekNum = CalendarEngine.getWeekNumber(weekDays[0]);
 
     return (
@@ -24,7 +23,6 @@ const WeekRow: React.FC<WeekRowProps> = ({ weekDays, children, weekEvents, onWee
                     events={weekEvents}
                     onWeekClick={onWeekClick}
                     onWeekLongPress={onWeekLongPress}
-                    onDeleteEvent={onDeleteEvent}
                 />
                 {children}
             </div>
