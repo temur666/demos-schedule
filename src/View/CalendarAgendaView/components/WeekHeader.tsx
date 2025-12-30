@@ -25,8 +25,8 @@ const WeekHeader: React.FC<WeekHeaderProps> = ({ date }) => {
     }
 
     return (
-        <div className="sticky top-0 z-20 h-16 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-border-subtle dark:border-white/5">
-            <div className="pl-4 pr-4 h-full flex items-center justify-between">
+        <div className="sticky top-0 z-20 h-16 bg-white dark:bg-black border-b border-transparent dark:border-white/5">
+            <div className="px-2 h-full flex items-center justify-between">
                 <div className="flex items-baseline gap-3">
                     <h2 className="text-2xl font-medium text-gray-900 dark:text-white font-display tracking-tight">
                         {mainTitle}
@@ -35,12 +35,12 @@ const WeekHeader: React.FC<WeekHeaderProps> = ({ date }) => {
                         {subTitle}
                     </span>
                     {badge && (
-                        <span className="ml-1 px-2 py-0.5 text-xs font-medium bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 rounded-full">
+                        <span className="ml-1 px-2 py-0.5 text-xs font-medium bg-black/5 dark:bg-white/10 text-black dark:text-gray-300 rounded-full">
                             {badge}
                         </span>
                     )}
                 </div>
-                <span className="text-2xl font-medium text-gray-400 dark:text-gray-500 font-display">
+                <span className="text-2xl font-medium text-black dark:text-gray-500 font-display">
                     {d.format('YYYY')}
                 </span>
             </div>

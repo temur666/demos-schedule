@@ -15,7 +15,7 @@ const AgendaEvent: React.FC<AgendaEventProps> = ({ event, onDelete }) => {
                     {minutesToTime(event.startTime)}
                 </span>
             </div>
-            <div className="flex-1 p-2 rounded-2xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 shadow-sm relative overflow-hidden active:scale-[0.98] transition-transform duration-200 cursor-pointer hover:shadow-md group/event">
+            <div className="flex-1 p-2 rounded-2xl bg-white dark:bg-white/5 border border-transparent dark:border-white/5 relative overflow-hidden active:scale-[0.98] transition-transform duration-200 cursor-pointer group/event">
                 <div className="absolute left-0 top-0 bottom-0 w-1" style={{ backgroundColor: event.color }}></div>
                 <div className="flex justify-between items-start mb-1">
                     <h3 className="font-medium text-gray-900 dark:text-white text-[9px]">{event.title}</h3>
@@ -24,15 +24,15 @@ const AgendaEvent: React.FC<AgendaEventProps> = ({ event, onDelete }) => {
                             e.stopPropagation();
                             onDelete(event.id);
                         }}
-                        className="size-4 flex items-center justify-center rounded-full bg-gray-50 dark:bg-white/5 opacity-0 group-hover/event:opacity-100 transition-opacity hover:bg-red-500 hover:text-white"
+                        className="size-4 flex items-center justify-center rounded-full bg-transparent dark:bg-white/5 opacity-0 group-hover/event:opacity-100 transition-opacity hover:bg-red-500 hover:text-white"
                     >
                         <span className="material-symbols-outlined text-[10px]">delete</span>
                     </button>
                 </div>
                 {event.description && (
-                    <p className="text-[8px] text-gray-400 mb-1">{event.description}</p>
+                    <p className="text-[8px] text-black dark:text-white/60 mb-1">{event.description}</p>
                 )}
-                <div className="flex items-center gap-1 text-[8px] text-gray-400">
+                <div className="flex items-center gap-1 text-[8px] text-black dark:text-white/60">
                     <span className="material-symbols-outlined text-[10px]">schedule</span>
                     <span>{minutesToTime(event.startTime)} - {minutesToTime(event.endTime)}</span>
                 </div>

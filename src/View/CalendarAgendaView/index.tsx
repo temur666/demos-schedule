@@ -42,7 +42,7 @@ const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({ activeDate, onA
         <main
             ref={containerRef}
             onScroll={handleScroll}
-            className="flex-1 p-0 pb-32 overflow-y-auto hide-scrollbar bg-gray-100 dark:bg-black"
+            className="flex-1 p-0 pb-32 overflow-y-auto hide-scrollbar bg-white dark:bg-black"
         >
             {groupedWeeks.map((week) => (
                 <div key={week.weekKey} data-week={week.weekKey}>
