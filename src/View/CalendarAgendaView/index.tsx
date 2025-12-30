@@ -3,6 +3,7 @@ import { useCalendarAgendaStore } from '../../stores/useCalendarAgendaStore';
 import { useAgendaScroll } from './stores/useAgendaScroll';
 import AgendaDay from './components/AgendaDay';
 import WeekHeader from './components/WeekHeader';
+import WeekPlan from './components/WeekPlan';
 import { dayjs } from '../../calendar/utils';
 
 interface CalendarAgendaViewProps {
@@ -47,6 +48,7 @@ const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({ activeDate, onA
             {groupedWeeks.map((week) => (
                 <div key={week.weekKey} data-week={week.weekKey}>
                     <WeekHeader date={week.startDate} />
+                    <WeekPlan weekKey={week.weekKey} />
                     {week.days.map((date) => (
                         <AgendaDay
                             key={date.toISOString()}
