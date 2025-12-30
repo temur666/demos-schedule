@@ -64,11 +64,10 @@ body {
   /* text-gray-900 */
 }
 
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: #111;
-    color: #ffffff;
-  }
+/* Dark mode styles - controlled by .dark class */
+.dark body {
+  background-color: #111;
+  color: #ffffff;
 }
 
 #root {

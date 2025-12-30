@@ -10,7 +10,7 @@ interface DayHeaderProps {
 
 const DayHeader: React.FC<DayHeaderProps> = ({ date, isToday, layoutMode, onLayoutModeChange }) => {
     return (
-        <div className="sticky top-0 z-10 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/10">
+        <div className="sticky top-0 z-10 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-border-subtle dark:border-white/5">
             <div className="px-4 py-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <span className="text-label-base font-medium text-gray-400 uppercase">

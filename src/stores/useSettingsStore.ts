@@ -5,8 +5,10 @@ import { type WeekStart, setWeekStart as updateDayjsLocale } from '../calendar/l
 interface SettingsState {
     weekStart: WeekStart;
     isDarkMode: boolean;
+    autoFollowSystem: boolean;
     setWeekStart: (start: WeekStart) => void;
     toggleDarkMode: () => void;
+    setAutoFollowSystem: (auto: boolean) => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -14,6 +16,7 @@ export const useSettingsStore = create<SettingsState>()(
         (set) => ({
             weekStart: 1, // Default to Monday
             isDarkMode: typeof window !== 'undefined' ? window.matchMedia('(prefers-color-scheme: dark)').matches : false,
+            autoFollowSystem: true, // 默认跟随系统
 
             setWeekStart: (start) => {
                 updateDayjsLocale(start);
@@ -27,7 +30,22 @@ export const useSettingsStore = create<SettingsState>()(
                 } else {
                     document.documentElement.classList.remove('dark');
                 }
-                return { isDarkMode: newValue };
+                // 手动切换时，关闭自动跟随系统
+                return { isDarkMode: newValue, autoFollowSystem: false };
+            }),
+
+            setAutoFollowSystem: (auto) => set((state) => {
+                if (auto) {
+                    // 重新启用跟随系统时，立即同步系统主题
+                    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    if (systemDark) {
+                        document.documentElement.classList.add('dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                    }
+                    return { autoFollowSystem: true, isDarkMode: systemDark };
+                }
+                return { autoFollowSystem: false };
             }),
         }),
         {
