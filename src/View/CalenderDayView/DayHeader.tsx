@@ -12,9 +12,22 @@ const DayHeader: React.FC<DayHeaderProps> = ({ date, isToday, layoutMode, onLayo
     return (
         <div className="sticky top-0 z-10 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/10">
             <div className="px-4 py-4 flex items-center justify-between">
-                <h2 className={`text-3xl font-black uppercase tracking-widest font-display-bold ${isToday ? 'text-red-500' : 'text-gray-900 dark:text-white'}`}>
-                    {dayjs(date).format('dddd, MMMM D')}
-                </h2>
+                <div className="flex items-center gap-3">
+                    <span className="text-label-base font-medium text-gray-400 uppercase">
+                        {['日', '一', '二', '三', '四', '五', '六'][dayjs(date).day()]}
+                    </span>
+                    <div className={`
+                        flex items-center justify-center w-12 h-12 rounded-full transition-colors
+                        ${isToday ? 'bg-red-500 text-white' : 'text-gray-900 dark:text-white'}
+                    `}>
+                        <span className="text-3xl font-black font-serif-art">
+                            {dayjs(date).date()}
+                        </span>
+                    </div>
+                    <span className="text-xl font-medium text-gray-500 dark:text-gray-400 ml-1">
+                        {dayjs(date).format('M月')}
+                    </span>
+                </div>
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => onLayoutModeChange(layoutMode === 'linear' ? 'timeline' : 'linear')}
@@ -24,7 +37,7 @@ const DayHeader: React.FC<DayHeaderProps> = ({ date, isToday, layoutMode, onLayo
                             {layoutMode === 'linear' ? 'grid_view' : 'view_day'}
                         </span>
                     </button>
-                    {isToday && <span className="text-[10px] bg-red-500 text-white px-2 py-1 rounded-full font-bold uppercase tracking-wider">Today</span>}
+                    {/* Today badge removed as it's now integrated into the date box */}
                 </div>
             </div>
         </div>
