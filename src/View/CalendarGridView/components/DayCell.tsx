@@ -26,6 +26,11 @@ const DayCell: React.FC<DayCellProps> = ({ date, events, onDateClick, onDeleteEv
             <div className="flex justify-between items-center mb-2 shrink-0">
                 <span className="text-label-base font-medium text-gray-400 uppercase">
                     {WEEK_DAYS[dayjs(date).day()]}
+                    {dayjs(date).date() === 1 && (
+                        <span className="ml-1 text-[10px] text-primary-default dark:text-primary-light">
+                            ({dayjs(date).format('M月')})
+                        </span>
+                    )}
                 </span>
                 <span className="text-xl font-black font-serif-art text-gray-900 dark:text-white">
                     {dayjs(date).date()}

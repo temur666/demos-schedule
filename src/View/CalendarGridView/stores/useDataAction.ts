@@ -31,7 +31,10 @@ export const useDataAction = (activeDate: string) => {
             monthKey: dayjs(month).format('YYYY-MM'),
             monthDate: month,
             weeks: CalendarEngine.getWeeksInRange(CalendarEngine.getVisibleRange(month, 'month'))
-                .filter(week => dayjs(week[0]).day(1).isSame(month, 'month')),
+                .filter(week => {
+                    const monday = week.find(d => dayjs(d).day() === 1);
+                    return monday && dayjs(monday).isSame(month, 'month');
+                }),
         }));
     }, [months, weekStart]);
 
