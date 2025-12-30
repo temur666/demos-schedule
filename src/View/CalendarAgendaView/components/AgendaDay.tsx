@@ -13,8 +13,9 @@ interface AgendaDayProps {
 
 const AgendaDay: React.FC<AgendaDayProps> = ({ date, events, onDeleteEvent }) => {
     const d = dayjs(date);
-    const weekday = d.format('dddd');
-    const day = d.format('MMM D');
+    const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+    const weekday = weekdays[d.day()];
+    const day = d.format('D');
     const isToday = d.isSame(dayjs(), 'day');
     const dateStr = formatDate(date);
     const rowHeight = useGridUIStore(state => state.rowHeight);
@@ -26,10 +27,10 @@ const AgendaDay: React.FC<AgendaDayProps> = ({ date, events, onDeleteEvent }) =>
             <div className="h-16 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/5">
                 <div className="px-2 h-full flex items-center justify-between">
                     <div className="flex items-baseline gap-2">
-                        <h2 className="text-2xl font-medium text-gray-900 dark:text-white font-display tracking-tight">
+                        <h2 className="text-2xl font-medium text-black dark:text-white font-display tracking-tight">
                             {weekday}
                         </h2>
-                        <span className="text-xl text-gray-400 font-serif font-medium">{day}</span>
+                        <span className="text-xl text-black dark:text-white font-serif font-medium">{day}</span>
                     </div>
                     {isToday && (
                         <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 dark:text-blue-300 dark:bg-blue-900/20 px-2 py-1 rounded-full">Today</span>
