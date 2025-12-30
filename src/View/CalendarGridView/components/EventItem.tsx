@@ -1,5 +1,6 @@
 import React from 'react';
 import type { CalendarEvent } from '../../../types/event';
+import { getColorTheme } from '../../../utils/colorTheme';
 
 interface EventItemProps {
     event: CalendarEvent;
@@ -7,9 +8,11 @@ interface EventItemProps {
 }
 
 const EventItem: React.FC<EventItemProps> = ({ event, onDeleteEvent }) => {
+    const theme = getColorTheme(event.color);
+
     return (
-        <div className="w-full pl-2 py-0.5 border-l-2 relative group/event" style={{ borderColor: event.color }}>
-            <span className="text-micro font-medium text-gray-900 dark:text-white truncate block pr-3">
+        <div className={`w-full pl-2 py-0.5 border-l-2 relative group/event ${theme.bg} ${theme.darkBg} rounded`} style={{ borderColor: event.color }}>
+            <span className={`text-micro font-medium ${theme.text} ${theme.darkText} truncate block pr-3`}>
                 {event.title}
             </span>
             <button
