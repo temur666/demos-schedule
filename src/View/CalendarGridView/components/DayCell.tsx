@@ -29,8 +29,8 @@ const DayCell: React.FC<DayCellProps> = ({ date, events, onDateClick, onDeleteEv
                 </span>
                 <div className="flex items-baseline gap-1">
                     {dayjs(date).date() === 1 && (
-                        <span className="text-sm font-serif-art text-primary-default dark:text-primary-light">
-                            {dayjs(date).format('M月')}
+                        <span className="text-x font-serif-art text-primary-default dark:text-primary-light">
+                            {dayjs(date).format('(M月)')}
                         </span>
                     )}
                     <span className="text-xl font-black font-serif-art text-gray-900 dark:text-white">
