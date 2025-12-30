@@ -26,7 +26,7 @@ const LinearModeView: React.FC<LinearModeViewProps> = ({
             </div>
 
             {/* Timeline */}
-            <div className="relative">
+            <div className="relative pt-4">
                 <div className="flex flex-col">
                     {Array.from({ length: 24 }).map((_, i) => {
                         const hour = i % 12 || 12;
@@ -36,13 +36,13 @@ const LinearModeView: React.FC<LinearModeViewProps> = ({
                         return (
                             <div
                                 key={i}
-                                className="flex h-[60px] relative group active:bg-gray-100 dark:active:bg-white/10 transition-all duration-200 cursor-crosshair"
+                                className="flex h-[60px] items-start relative group active:bg-gray-100 dark:active:bg-white/10 transition-all duration-200 cursor-crosshair"
                                 onContextMenu={(e) => {
                                     e.preventDefault();
                                     onBlankLongPress?.(dateStr, slotTime);
                                 }}
                             >
-                                <div className="w-16 flex-shrink-0 flex justify-end pr-3 pt-2 text-[11px] font-medium text-gray-400 select-none">
+                                <div className="w-16 flex-shrink-0 flex justify-end pr-3 -translate-y-1/2 text-[11px] leading-none font-medium text-gray-400 select-none">
                                     {hour} {ampm}
                                 </div>
                                 <div className="flex-1 border-t border-gray-100 dark:border-white/10" />
