@@ -7,9 +7,8 @@ interface WeekHeaderProps {
 
 const WeekHeader: React.FC<WeekHeaderProps> = ({ date }) => {
     const d = dayjs(date);
-    const startOfMonth = d.startOf('month');
-
-    const weekOfMonth = Math.ceil((d.date() + startOfMonth.day()) / 7);
+    const dayOfMonth = d.date();
+    const weekOfMonth = Math.min(Math.ceil(dayOfMonth / 7), 4);
     const weekStr = `第${weekOfMonth}周`;
 
     return (

@@ -23,7 +23,11 @@ const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({ activeDate, onA
     const groupedWeeks = React.useMemo(() => {
         const groups: { weekKey: string; startDate: Date; days: Date[] }[] = [];
         days.forEach(date => {
-            const weekKey = `${dayjs(date).format('YYYY-MM')}-${dayjs(date).startOf('week').toISOString()}`;
+            const d = dayjs(date);
+            const dayOfMonth = d.date();
+            const weekOfMonth = Math.min(Math.ceil(dayOfMonth / 7), 4);
+            const weekKey = `${d.format('YYYY-MM')}-W${weekOfMonth}`;
+
             let group = groups.find(g => g.weekKey === weekKey);
             if (!group) {
                 group = { weekKey, startDate: date, days: [] };
