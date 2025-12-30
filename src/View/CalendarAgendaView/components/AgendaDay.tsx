@@ -26,7 +26,7 @@ const AgendaDay: React.FC<AgendaDayProps> = ({ date, events, onDeleteEvent }) =>
             <div className="sticky top-16 z-10 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/5">
                 <div className="px-2 py-4 flex items-center justify-between">
                     <div className="flex items-baseline gap-2">
-                        <h2 className="text-2xl font-black text-gray-900 dark:text-white font-display">
+                        <h2 className="text-2xl font-medium text-gray-900 dark:text-white font-display tracking-tight">
                             {weekday}
                         </h2>
                         <span className="text-xl text-gray-400 font-serif font-medium">{day}</span>
