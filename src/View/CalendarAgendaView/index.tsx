@@ -24,13 +24,13 @@ const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({ activeDate, onA
         const groups: { weekKey: string; startDate: Date; days: Date[] }[] = [];
         days.forEach(date => {
             const d = dayjs(date);
-            const dayOfMonth = d.date();
-            const weekOfMonth = Math.min(Math.ceil(dayOfMonth / 7), 4);
-            const weekKey = `${d.format('YYYY-MM')}-W${weekOfMonth}`;
+            // 使用周一作为周的开始 (由 locale 设置决定)
+            const startOfWeek = d.startOf('week');
+            const weekKey = startOfWeek.format('YYYY-MM-DD');
 
             let group = groups.find(g => g.weekKey === weekKey);
             if (!group) {
-                group = { weekKey, startDate: date, days: [] };
+                group = { weekKey, startDate: startOfWeek.toDate(), days: [] };
                 groups.push(group);
             }
             group.days.push(date);

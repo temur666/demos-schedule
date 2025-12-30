@@ -6,12 +6,13 @@ import { dayjs } from '../calendar/utils';
 export const useCalendarAgendaStore = (activeDate: string) => {
     const { events, deleteEvent } = useEvents();
 
-    // 初始加载前后 14 天
+    // 初始加载前后 14 天，并对齐到周初（周一）
     const [days, setDays] = useState<Date[]>(() => {
-        const current = dayjs(activeDate).toDate();
+        const start = dayjs(activeDate).subtract(14, 'day').startOf('week');
         const result: Date[] = [];
-        for (let i = -14; i <= 14; i++) {
-            result.push(dayjs(current).add(i, 'day').toDate());
+        // 加载约 5 周的数据 (35 天)
+        for (let i = 0; i < 35; i++) {
+            result.push(start.add(i, 'day').toDate());
         }
         return result;
     });
@@ -19,14 +20,14 @@ export const useCalendarAgendaStore = (activeDate: string) => {
     useEffect(() => {
         const date = dayjs(activeDate);
         if (!days.some(d => dayjs(d).isSame(date, 'day'))) {
-            const current = date.toDate();
+            const start = date.subtract(14, 'day').startOf('week');
             const result: Date[] = [];
-            for (let i = -14; i <= 14; i++) {
-                result.push(dayjs(current).add(i, 'day').toDate());
+            for (let i = 0; i < 35; i++) {
+                result.push(start.add(i, 'day').toDate());
             }
             setDays(result);
         }
-    }, [activeDate]);
+    }, [activeDate, days]);
 
     const loadMore = useCallback((direction: 'up' | 'down') => {
         setDays(prev => {
