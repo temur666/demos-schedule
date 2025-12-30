@@ -12,12 +12,10 @@ const WeekHeader: React.FC<WeekHeaderProps> = ({ date }) => {
 
     // 计算当前日期是本月的第几周
     let weekOfMonth = Math.ceil((d.date() + startOfMonth.day()) / 7);
-    // 限制在 1-4 周（根据用户需求或常规显示）
+    // 限制在 1-4 周
     if (weekOfMonth > 4) weekOfMonth = 4;
 
-    const weekMap = ['一', '二', '三', '四'];
-    const weekNumStr = weekMap[weekOfMonth - 1] || weekOfMonth;
-    const weekStr = `第${weekNumStr}周`;
+    const weekStr = `第${weekOfMonth}周`;
 
     return (
         <div className="sticky top-0 z-20 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-border-subtle dark:border-white/5 h-16">
