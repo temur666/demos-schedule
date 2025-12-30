@@ -35,7 +35,7 @@ const TimelineEventCard: React.FC<TimelineEventCardProps> = ({
             <span className="text-[11px] font-bold leading-none truncate">
                 {event.title}
             </span>
-            <span className="text-[9px] opacity-70 mt-auto font-medium">
+            <span className="text-[9px] opacity-70 mt-0.5 font-medium">
                 {formatTimeRange(event)}
             </span>
 
