@@ -1,6 +1,6 @@
 
 import PhoneFrame from './a_basic_frame/PhoneFrame';
-import CalendarPage from './pages/CalendarPage';
+import CalendarPage from './View/CalendarPage';
 import { EventProvider } from './contexts/EventContext';
 import { SettingsProvider } from './contexts/SettingsContext';
 

@@ -9,10 +9,9 @@ interface AgendaDayProps {
     date: Date;
     events: CalendarEvent[];
     onDeleteEvent: (id: string) => void;
-    showWeekHeader?: boolean;
 }
 
-const AgendaDay: React.FC<AgendaDayProps> = ({ date, events, onDeleteEvent, showWeekHeader }) => {
+const AgendaDay: React.FC<AgendaDayProps> = ({ date, events, onDeleteEvent }) => {
     const d = dayjs(date);
     const weekday = d.format('dddd');
     const day = d.format('MMM D');
@@ -20,34 +19,11 @@ const AgendaDay: React.FC<AgendaDayProps> = ({ date, events, onDeleteEvent, show
     const dateStr = formatDate(date);
     const rowHeight = useGridUIStore(state => state.rowHeight);
 
-    const getWeekInfo = () => {
-        const monthStr = d.format('M月');
-        const startOfMonth = d.startOf('month');
-        let weekOfMonth = Math.ceil((d.date() + startOfMonth.day()) / 7);
-        // Cap at 4 weeks per month
-        if (weekOfMonth > 4) weekOfMonth = 4;
-
-        const weekMap = ['一', '二', '三', '四'];
-        const weekNumStr = weekMap[weekOfMonth - 1] || weekOfMonth;
-        return { monthStr, weekStr: `第${weekNumStr}周` };
-    };
-
-    const { monthStr, weekStr } = getWeekInfo();
 
     return (
         <div data-date={dateStr} className="relative mb-6">
-            {showWeekHeader && (
-                <div className="relative py-6 flex justify-center items-center">
-                    <span className="absolute left-4 text-black dark:text-white font-sans text-sm font-bold">
-                        {weekStr}
-                    </span>
-                    <span className="text-[#ff3b30] font-serif text-lg font-bold tracking-widest">
-                        {monthStr}
-                    </span>
-                </div>
-            )}
             {/* 日期标题栏 */}
-            <div className="sticky top-0 z-10 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/5">
+            <div className="sticky top-16 z-10 bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/5">
                 <div className="px-2 py-4 flex items-center justify-between">
                     <div className="flex items-baseline gap-2">
                         <h2 className="text-2xl font-black text-gray-900 dark:text-white font-display">

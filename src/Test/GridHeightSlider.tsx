@@ -1,5 +1,5 @@
 import React from 'react';
-import { useGridUIStore, MIN_ROW_HEIGHT, MAX_ROW_HEIGHT } from '../pages/CalendarGridView/stores/useGridUIStore';
+import { useGridUIStore, MIN_ROW_HEIGHT, MAX_ROW_HEIGHT } from '../View/CalendarGridView/stores/useGridUIStore';
 
 const GridHeightSlider: React.FC = () => {
     const { rowHeight, setRowHeight } = useGridUIStore();
