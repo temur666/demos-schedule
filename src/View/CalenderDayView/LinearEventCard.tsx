@@ -26,7 +26,7 @@ const LinearEventCard: React.FC<LinearEventCardProps> = ({ event }) => {
         >
             <div className="flex flex-col h-full relative">
                 <span className="text-xs font-bold leading-tight truncate">{event.title}</span>
-                <span className="text-[10px] opacity-70 mt-auto font-medium">
+                <span className="text-[10px] opacity-70 mt-0.5 font-medium">
                     {formatTimeRange(event)}
                 </span>
 

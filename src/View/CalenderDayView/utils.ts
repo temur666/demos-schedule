@@ -13,35 +13,49 @@ export const assignLayoutToEvents = (events: any[]) => {
         return a.id.localeCompare(b.id);
     });
 
-    const layers: any[][] = [];
-    const eventsWithLayout = sortedEvents.map(event => ({
-        ...event,
-        column: 0,
-        totalColumns: 1
-    }));
+    const results: any[] = [];
+    let cluster: any[] = [];
+    let clusterEnd = -1;
 
-    for (const event of eventsWithLayout) {
-        let assignedLayer = -1;
-        for (let i = 0; i < layers.length; i++) {
-            if (!layers[i].some(le => isOverlapping(event, le))) {
-                assignedLayer = i;
-                break;
+    const processCluster = (c: any[]) => {
+        const layers: any[][] = [];
+        c.forEach(event => {
+            let layer = -1;
+            for (let i = 0; i < layers.length; i++) {
+                if (!layers[i].some(le => isOverlapping(event, le))) {
+                    layer = i;
+                    break;
+                }
             }
-        }
-        if (assignedLayer === -1) {
-            assignedLayer = layers.length;
-            layers.push([]);
-        }
-        layers[assignedLayer].push(event);
-        (event as any).column = assignedLayer;
-    }
+            if (layer === -1) {
+                layer = layers.length;
+                layers.push([]);
+            }
+            layers[layer].push(event);
+            event.column = layer;
+        });
+        const totalCols = layers.length;
+        c.forEach(event => { event.totalColumns = totalCols; });
+    };
 
-    const maxLayers = layers.length;
-    eventsWithLayout.forEach(event => {
-        (event as any).totalColumns = maxLayers;
+    sortedEvents.forEach(event => {
+        const eventWithLayout = { ...event, column: 0, totalColumns: 1 };
+        if (event.startTime >= clusterEnd && cluster.length > 0) {
+            processCluster(cluster);
+            results.push(...cluster);
+            cluster = [];
+            clusterEnd = -1;
+        }
+        cluster.push(eventWithLayout);
+        clusterEnd = Math.max(clusterEnd, event.endTime);
     });
 
-    return eventsWithLayout;
+    if (cluster.length > 0) {
+        processCluster(cluster);
+        results.push(...cluster);
+    }
+
+    return results;
 };
 
 // 获取文本颜色
