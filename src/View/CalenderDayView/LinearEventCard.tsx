@@ -1,5 +1,6 @@
 import React from 'react';
-import { calculatePosition, calculateHeight, getTextColor, formatTimeRange } from './utils';
+import { calculatePosition, calculateHeight, formatTimeRange } from './utils';
+import { getColorTheme } from '../../utils/colorTheme';
 
 interface LinearEventCardProps {
     event: any;
@@ -11,17 +12,16 @@ const LinearEventCard: React.FC<LinearEventCardProps> = ({ event, onDelete }) =>
     const height = calculateHeight(event.startTime, event.endTime);
     const width = 100 / (event.totalColumns || 1);
     const left = (event.column || 0) * width;
-    const textColor = getTextColor(event.color);
+    const theme = getColorTheme(event.color);
 
     return (
         <div
-            className={`absolute rounded-xl p-2 cursor-pointer hover:brightness-95 transition-all shadow-sm pointer-events-auto overflow-hidden group/event border border-white/10 ${textColor}`}
+            className={`absolute rounded-xl p-2 cursor-pointer hover:brightness-95 transition-all shadow-sm pointer-events-auto overflow-hidden group/event border border-black/5 dark:border-white/10 ${theme.bg} ${theme.darkBg} ${theme.text} ${theme.darkText}`}
             style={{
                 top: `${top}px`,
                 height: `${height}px`,
                 left: `${left}%`,
                 width: `calc(${width}% - 4px)`,
-                backgroundColor: event.color,
                 zIndex: 10 + (event.column || 0)
             }}
         >

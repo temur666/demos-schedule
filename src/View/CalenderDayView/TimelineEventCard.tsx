@@ -1,7 +1,8 @@
 import React from 'react';
-import { getTextColor, formatTimeRange } from './utils';
+import { formatTimeRange } from './utils';
 import { useTimelineUIStore } from './stores/useTimelineUIStore';
 import { TIMELINE_CONFIG } from './config/timelineConfig';
+import { getColorTheme } from '../../utils/colorTheme';
 
 interface TimelineEventCardProps {
     event: any;
@@ -13,22 +14,21 @@ const TimelineEventCard: React.FC<TimelineEventCardProps> = ({
     hoursPerRow
 }) => {
     const { rowHeight } = useTimelineUIStore();
+    const theme = getColorTheme(event.color);
 
     const slotDuration = hoursPerRow * 60;
     const left = (event.startTime / slotDuration) * 100;
     const width = ((event.endTime - event.startTime) / slotDuration) * 100;
-    const textColor = getTextColor(event.color);
     const top = TIMELINE_CONFIG.ITEM_GAP + (event.column * (rowHeight + TIMELINE_CONFIG.ITEM_GAP));
 
     return (
         <div
-            className={`absolute flex flex-col rounded-xl p-2 shadow-sm border border-white/10 transition-all overflow-hidden ${textColor}`}
+            className={`absolute flex flex-col rounded-xl p-2 shadow-sm border border-black/5 dark:border-white/10 transition-all overflow-hidden ${theme.bg} ${theme.darkBg} ${theme.text} ${theme.darkText}`}
             style={{
                 left: `${left}%`,
                 width: `calc(${Math.max(width, 5)}% - 4px)`,
                 top: `${top}px`,
                 height: `${rowHeight}px`,
-                backgroundColor: event.color,
                 zIndex: 10 + event.column
             }}
         >
