@@ -34,7 +34,7 @@ export const useSettingsStore = create<SettingsState>()(
                 return { isDarkMode: newValue, autoFollowSystem: false };
             }),
 
-            setAutoFollowSystem: (auto) => set((state) => {
+            setAutoFollowSystem: (auto) => set((_state) => {
                 if (auto) {
                     // 重新启用跟随系统时，立即同步系统主题
                     const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;

@@ -12,7 +12,7 @@ interface CalendarAgendaViewProps {
 }
 
 const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({ activeDate, onActiveDateChange }) => {
-    const { days, loadMore, handleDeleteEvent, getEventsForDate } = useCalendarAgendaStore(activeDate);
+    const { days, loadMore, getEventsForDate } = useCalendarAgendaStore(activeDate);
 
     const { containerRef, handleScroll } = useAgendaScroll({
         days,
@@ -54,7 +54,6 @@ const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({ activeDate, onA
                             key={date.toISOString()}
                             date={date}
                             events={getEventsForDate(date)}
-                            onDeleteEvent={handleDeleteEvent}
                         />
                     ))}
                 </div>

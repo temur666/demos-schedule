@@ -5,10 +5,9 @@ import { getColorTheme } from '../../../utils/colorTheme';
 
 interface AgendaEventProps {
     event: CalendarEvent;
-    onDelete: (id: string) => void;
 }
 
-const AgendaEvent: React.FC<AgendaEventProps> = ({ event, onDelete }) => {
+const AgendaEvent: React.FC<AgendaEventProps> = ({ event }) => {
     const theme = getColorTheme(event.color);
 
     return (

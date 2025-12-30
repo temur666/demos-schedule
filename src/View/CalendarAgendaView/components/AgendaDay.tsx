@@ -8,10 +8,9 @@ import { useGridUIStore } from '../../CalendarGridView/stores/useGridUIStore';
 interface AgendaDayProps {
     date: Date;
     events: CalendarEvent[];
-    onDeleteEvent: (id: string) => void;
 }
 
-const AgendaDay: React.FC<AgendaDayProps> = ({ date, events, onDeleteEvent }) => {
+const AgendaDay: React.FC<AgendaDayProps> = ({ date, events }) => {
     const d = dayjs(date);
     const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
     const weekday = weekdays[d.day()];
@@ -44,7 +43,7 @@ const AgendaDay: React.FC<AgendaDayProps> = ({ date, events, onDeleteEvent }) =>
                     <div className="flex flex-col gap-1 relative">
                         <div className="absolute left-[2.5rem] top-0 bottom-0 w-px bg-transparent -z-0"></div>
                         {events.sort((a, b) => a.startTime - b.startTime).map(event => (
-                            <AgendaEvent key={event.id} event={event} onDelete={onDeleteEvent} />
+                            <AgendaEvent key={event.id} event={event} />
                         ))}
                     </div>
                 ) : (
