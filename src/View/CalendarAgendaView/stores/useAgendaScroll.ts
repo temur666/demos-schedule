@@ -1,4 +1,5 @@
 import { useRef, useEffect, useCallback } from 'react';
+import { dayjs } from '../../../calendar/utils';
 
 interface UseAgendaScrollProps {
     days: Date[];
@@ -28,15 +29,16 @@ export const useAgendaScroll = ({ days, loadMore, activeDate, onActiveDateChange
     // 当 activeDate 改变时（且非手动滚动中），自动滚动到对应位置
     useEffect(() => {
         if (!isScrolling.current && containerRef.current) {
-            const el = containerRef.current.querySelector(`[data-date="${activeDate}"]`) as HTMLElement;
-            if (el) {
-                const container = containerRef.current;
-                const elementTop = el.offsetTop;
-                const elementHeight = el.offsetHeight;
-                const containerHeight = container.clientHeight;
+            // 优先寻找周容器，实现“吸顶”效果
+            const weekKey = dayjs(activeDate).startOf('week').format('YYYY-MM-DD');
+            const weekEl = containerRef.current.querySelector(`[data-week="${weekKey}"]`) as HTMLElement;
+            const dayEl = containerRef.current.querySelector(`[data-date="${activeDate}"]`) as HTMLElement;
 
-                // 计算居中位置
-                const targetScrollTop = elementTop - (containerHeight / 2) + (elementHeight / 2);
+            const targetEl = weekEl || dayEl;
+
+            if (targetEl) {
+                const container = containerRef.current;
+                const targetScrollTop = targetEl.offsetTop;
 
                 container.scrollTo({
                     top: targetScrollTop,

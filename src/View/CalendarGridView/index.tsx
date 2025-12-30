@@ -9,11 +9,12 @@ import { usePinchAction } from './stores/usePinchAction';
 interface CalendarGridViewProps {
     activeDate: string;
     onDateClick?: (date: string) => void;
+    onWeekClick?: (date: string) => void;
     onWeekLongPress?: (date: string) => void;
     onActiveDateChange?: (date: string) => void;
 }
 
-const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate, onDateClick, onWeekLongPress, onActiveDateChange }) => {
+const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate, onDateClick, onWeekClick, onWeekLongPress, onActiveDateChange }) => {
     const { monthGroups, loadMore, deleteEvent, getEventsForDate, getWeekPlanEvents } = useDataAction(activeDate);
     const containerRef = useRef<HTMLDivElement>(null);
     const { handleScroll } = useScrollAction(containerRef, monthGroups, loadMore, activeDate, onActiveDateChange);
@@ -37,7 +38,7 @@ const CalendarGridView: React.FC<CalendarGridViewProps> = ({ activeDate, onDateC
                             key={`${monthGroup.monthKey}-${weekIdx}`}
                             weekDays={weekDays}
                             weekEvents={getWeekPlanEvents(weekDays)}
-                            onWeekClick={onDateClick}
+                            onWeekClick={onWeekClick}
                             onWeekLongPress={onWeekLongPress}
                             onDeleteEvent={deleteEvent}
                         >

@@ -85,6 +85,10 @@ const CalendarPage: React.FC = () => {
                                         setActiveDate(date);
                                         setView('schedule');
                                     }}
+                                    onWeekClick={(date) => {
+                                        setActiveDate(date);
+                                        setView('agenda');
+                                    }}
                                     onWeekLongPress={handleCreateWeekPlan}
                                     onActiveDateChange={setActiveDate}
                                 />
