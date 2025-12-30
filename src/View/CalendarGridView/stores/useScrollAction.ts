@@ -59,16 +59,24 @@ export const useScrollAction = (
         }
         lastScrollTop.current = scrollTop;
 
+        // 2. 根据滚动位置更新 activeDate (检测视图顶部位置的日期)
         const containerRect = containerRef.current.getBoundingClientRect();
-        const centerY = containerRect.top + containerRect.height / 2;
+        // Grid 视图检测点稍低一点，因为有 MonthHeader
+        const detectY = containerRect.top + 150;
+
         const elements = containerRef.current.querySelectorAll('[data-date]');
+        let foundDate: string | null = null;
+
         for (const el of Array.from(elements)) {
             const rect = el.getBoundingClientRect();
-            if (rect.top <= centerY && rect.bottom >= centerY) {
-                const date = el.getAttribute('data-date');
-                if (date && date !== activeDate) onActiveDateChange?.(date);
+            if (rect.top <= detectY && rect.bottom >= detectY) {
+                foundDate = el.getAttribute('data-date');
                 break;
             }
+        }
+
+        if (foundDate && foundDate !== activeDate) {
+            onActiveDateChange?.(foundDate);
         }
     }, [activeDate, loadMore, onActiveDateChange, containerRef]);
 

@@ -66,18 +66,24 @@ export const useAgendaScroll = ({ days, loadMore, activeDate, onActiveDateChange
         }
         lastScrollTop.current = scrollTop;
 
-        // 2. 根据滚动位置更新 activeDate (检测视图中心位置的日期)
+        // 2. 根据滚动位置更新 activeDate (检测视图顶部位置的日期)
         const containerRect = containerRef.current.getBoundingClientRect();
-        const centerY = containerRect.top + containerRect.height / 2;
+        // 考虑到 sticky header 的高度 (约 64px)，我们检测顶部下方一点的位置
+        const detectY = containerRect.top + 100;
 
         const elements = containerRef.current.querySelectorAll('[data-date]');
+        let foundDate: string | null = null;
+
         for (const el of Array.from(elements)) {
             const rect = el.getBoundingClientRect();
-            if (rect.top <= centerY && rect.bottom >= centerY) {
-                const date = el.getAttribute('data-date');
-                if (date && date !== activeDate) onActiveDateChange?.(date);
+            if (rect.top <= detectY && rect.bottom >= detectY) {
+                foundDate = el.getAttribute('data-date');
                 break;
             }
+        }
+
+        if (foundDate && foundDate !== activeDate) {
+            onActiveDateChange?.(foundDate);
         }
     }, [activeDate, loadMore, onActiveDateChange]);
 
