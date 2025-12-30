@@ -1,30 +1,38 @@
-import { useState, useCallback } from 'react';
+import { create } from 'zustand';
 import { dayjs, formatDate } from '../calendar/utils';
 
 export type ViewType = 'grid' | 'agenda' | 'schedule';
 
-export const useCalendarPageStore = () => {
-    const [view, setView] = useState<ViewType>('schedule');
-    const [activeDate, setActiveDate] = useState(formatDate(new Date()));
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [initialModalData, setInitialModalData] = useState<{ startTime?: string, date?: string, isWeekPlan?: boolean }>({});
+interface CalendarPageState {
+    view: ViewType;
+    activeDate: string;
+    isModalOpen: boolean;
+    initialModalData: { startTime?: string, date?: string, isWeekPlan?: boolean };
+    setView: (view: ViewType) => void;
+    setActiveDate: (date: string) => void;
+    setIsModalOpen: (open: boolean) => void;
+    setInitialModalData: (data: { startTime?: string, date?: string, isWeekPlan?: boolean }) => void;
+    navigate: (direction: 'prev' | 'next') => void;
+}
 
-    const navigate = useCallback((direction: 'prev' | 'next') => {
+/**
+ * Global Store for Calendar Page state using Zustand
+ */
+export const useCalendarPageStore = create<CalendarPageState>((set, get) => ({
+    view: 'schedule',
+    activeDate: formatDate(new Date()),
+    isModalOpen: false,
+    initialModalData: {},
+
+    setView: (view) => set({ view }),
+    setActiveDate: (activeDate) => set({ activeDate }),
+    setIsModalOpen: (isModalOpen) => set({ isModalOpen }),
+    setInitialModalData: (initialModalData) => set({ initialModalData }),
+
+    navigate: (direction) => {
+        const { view, activeDate } = get();
         const unit = view === 'grid' ? 'month' : 'day';
         const amount = direction === 'prev' ? -1 : 1;
-        setActiveDate(formatDate(dayjs(activeDate).add(amount, unit)));
-    }, [view, activeDate]);
-
-
-    return {
-        view,
-        setView,
-        activeDate,
-        setActiveDate,
-        isModalOpen,
-        setIsModalOpen,
-        initialModalData,
-        setInitialModalData,
-        navigate,
-    };
-};
+        set({ activeDate: formatDate(dayjs(activeDate).add(amount, unit)) });
+    },
+}));

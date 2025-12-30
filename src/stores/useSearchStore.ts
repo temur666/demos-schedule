@@ -1,31 +1,22 @@
-import { useState, useCallback } from 'react';
+import { create } from 'zustand';
+
+interface SearchState {
+    isSearchOpen: boolean;
+    searchQuery: string;
+    setSearchQuery: (query: string) => void;
+    openSearch: () => void;
+    closeSearch: () => void;
+    toggleSearch: () => void;
+}
 
 /**
- * Store (ViewModel) for Search functionality
+ * Global Store for Search functionality using Zustand
  */
-export const useSearchStore = () => {
-    const [isSearchOpen, setIsSearchOpen] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
-
-    const openSearch = useCallback(() => {
-        setIsSearchOpen(true);
-    }, []);
-
-    const closeSearch = useCallback(() => {
-        setIsSearchOpen(false);
-        setSearchQuery('');
-    }, []);
-
-    const toggleSearch = useCallback(() => {
-        setIsSearchOpen(prev => !prev);
-    }, []);
-
-    return {
-        isSearchOpen,
-        searchQuery,
-        setSearchQuery,
-        openSearch,
-        closeSearch,
-        toggleSearch,
-    };
-};
+export const useSearchStore = create<SearchState>((set) => ({
+    isSearchOpen: false,
+    searchQuery: '',
+    setSearchQuery: (query) => set({ searchQuery: query }),
+    openSearch: () => set({ isSearchOpen: true }),
+    closeSearch: () => set({ isSearchOpen: false, searchQuery: '' }),
+    toggleSearch: () => set((state) => ({ isSearchOpen: !state.isSearchOpen })),
+}));

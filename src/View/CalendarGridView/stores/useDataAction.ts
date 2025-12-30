@@ -2,7 +2,7 @@ import { useMemo, useState, useEffect, useCallback } from 'react';
 import { useEvents } from '../../../contexts/useEvents';
 import { CalendarEngine } from '../../../calendar/engine';
 import { dayjs } from '../../../calendar/utils';
-import { useSettings } from '../../../contexts/SettingsContext';
+import { useSettingsStore } from '../../../stores/useSettingsStore';
 
 export interface MonthGroup {
     monthKey: string;
@@ -12,7 +12,7 @@ export interface MonthGroup {
 
 export const useDataAction = (activeDate: string) => {
     const { events, deleteEvent } = useEvents();
-    const { weekStart } = useSettings();
+    const { weekStart } = useSettingsStore();
     const [months, setMonths] = useState<Date[]>(() => {
         const current = dayjs(activeDate).startOf('month').toDate();
         return [dayjs(current).subtract(1, 'month').toDate(), current, dayjs(current).add(1, 'month').toDate()];

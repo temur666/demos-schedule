@@ -4,7 +4,7 @@ import { Button } from './ui/button';
 import { useSettingsStore } from '../stores/useSettingsStore';
 
 export function SettingsModal() {
-    const { weekStart, toggleWeekStart, isDarkMode, toggleDarkMode } = useSettingsStore();
+    const { weekStart, setWeekStart, isDarkMode, toggleDarkMode } = useSettingsStore();
 
     return (
         <Dialog>
@@ -46,7 +46,7 @@ export function SettingsModal() {
                             <Button
                                 variant={weekStart === 1 ? 'default' : 'ghost'}
                                 size="sm"
-                                onClick={() => toggleWeekStart(1)}
+                                onClick={() => setWeekStart(1)}
                                 className="rounded-md px-4 h-8 text-xs"
                             >
                                 周一
@@ -54,7 +54,7 @@ export function SettingsModal() {
                             <Button
                                 variant={weekStart === 0 ? 'default' : 'ghost'}
                                 size="sm"
-                                onClick={() => toggleWeekStart(0)}
+                                onClick={() => setWeekStart(0)}
                                 className="rounded-md px-4 h-8 text-xs"
                             >
                                 周日
