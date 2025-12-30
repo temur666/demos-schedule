@@ -30,7 +30,8 @@ export const useDataAction = (activeDate: string) => {
         return months.map(month => ({
             monthKey: dayjs(month).format('YYYY-MM'),
             monthDate: month,
-            weeks: CalendarEngine.getWeeksInRange(CalendarEngine.getVisibleRange(month, 'month')),
+            weeks: CalendarEngine.getWeeksInRange(CalendarEngine.getVisibleRange(month, 'month'))
+                .filter(week => dayjs(week[0]).day(1).isSame(month, 'month')),
         }));
     }, [months, weekStart]);
 
