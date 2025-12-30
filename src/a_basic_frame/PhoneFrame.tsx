@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import GridHeightSlider from '../Test/GridHeightSlider';
 
 interface PhoneFrameProps {
     children: React.ReactNode;
@@ -99,6 +100,8 @@ const PhoneFrame: React.FC<PhoneFrameProps> = ({ children }) => {
                                 className="w-full h-1 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-[#0B121F]"
                             />
                         </div>
+
+                        <GridHeightSlider />
 
                         <button
                             onClick={() => setShowShell(!showShell)}
