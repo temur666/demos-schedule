@@ -36,16 +36,21 @@ const LinearModeView: React.FC<LinearModeViewProps> = ({
                         return (
                             <div
                                 key={i}
-                                className="flex h-[60px] items-start relative group active:bg-gray-100 dark:active:bg-white/10 transition-all duration-200 cursor-crosshair"
+                                className="h-[60px] relative group active:bg-gray-100 dark:active:bg-white/10 transition-all duration-200 cursor-crosshair"
                                 onContextMenu={(e) => {
                                     e.preventDefault();
                                     onBlankLongPress?.(dateStr, slotTime);
                                 }}
                             >
-                                <div className="w-16 flex-shrink-0 flex justify-end pr-3 -translate-y-1/2 text-[11px] leading-none font-medium text-gray-400 select-none">
-                                    {hour} {ampm}
+                                {/* Time Label - Centered on the top line */}
+                                <div className="absolute top-0 left-0 w-16 pr-3 flex justify-end items-center h-0 z-10">
+                                    <span className="text-[11px] leading-none font-medium text-gray-400 select-none -translate-y-1/2 whitespace-nowrap">
+                                        {hour} {ampm}
+                                    </span>
                                 </div>
-                                <div className="flex-1 border-t border-gray-100 dark:border-white/10" />
+
+                                {/* Line and Slot Content */}
+                                <div className="ml-16 flex-1 border-t border-gray-100 dark:border-white/10 h-full" />
                             </div>
                         );
                     })}
