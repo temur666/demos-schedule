@@ -11,6 +11,8 @@ export const useAgendaScroll = ({ days, loadMore, activeDate, onActiveDateChange
     const containerRef = useRef<HTMLDivElement>(null);
     const lastScrollTop = useRef(0);
     const prevHeight = useRef(0);
+    const isScrolling = useRef(false);
+    const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // 向上滚动加载时的位置补偿
     useEffect(() => {
@@ -23,8 +25,37 @@ export const useAgendaScroll = ({ days, loadMore, activeDate, onActiveDateChange
         prevHeight.current = containerRef.current?.scrollHeight || 0;
     }, [days]);
 
+    // 当 activeDate 改变时（且非手动滚动中），自动滚动到对应位置
+    useEffect(() => {
+        if (!isScrolling.current && containerRef.current) {
+            const el = containerRef.current.querySelector(`[data-date="${activeDate}"]`) as HTMLElement;
+            if (el) {
+                const container = containerRef.current;
+                const elementTop = el.offsetTop;
+                const elementHeight = el.offsetHeight;
+                const containerHeight = container.clientHeight;
+
+                // 计算居中位置
+                const targetScrollTop = elementTop - (containerHeight / 2) + (elementHeight / 2);
+
+                container.scrollTo({
+                    top: targetScrollTop,
+                    behavior: 'smooth'
+                });
+            }
+        }
+    }, [activeDate, days]);
+
     const handleScroll = useCallback(() => {
         if (!containerRef.current) return;
+
+        // 开启滚动锁，防止自动滚动逻辑冲突
+        isScrolling.current = true;
+        if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+        scrollTimeout.current = setTimeout(() => {
+            isScrolling.current = false;
+        }, 150);
+
         const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
 
         // 1. 触发加载更多
